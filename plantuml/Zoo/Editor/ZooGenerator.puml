@@ -1,0 +1,9 @@
+@startuml
+class ZooGenerator <<static>> {
+    + {static} Generate(folder:string, origin:Vector3) : GameObject
+    + {static} GroupName(modelName:string) : string
+    + {static} GetClips(path:string) : List<AnimationClip>
+    + {static} Bounds(target:GameObject) : Bounds
+    + {static} Label(parent:Transform, text:string, position:Vector3, size:float, width:float, alignment:TextAlignmentOptions) : TextMeshPro
+}
+@enduml

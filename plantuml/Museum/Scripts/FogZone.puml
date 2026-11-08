@@ -1,0 +1,12 @@
+@startuml
+class FogZone {
+    + densityAtStart : float = 0.01f
+    + densityAtEnd : float = 0.2f
+    + UseLinear() : void
+    + UseExponential() : void
+    + UseExponentialSquared() : void
+}
+MonoBehaviour <|-- FogZone
+FogZone o-> "fogColour" Color
+FogZone o-> "mode" FogMode
+@enduml

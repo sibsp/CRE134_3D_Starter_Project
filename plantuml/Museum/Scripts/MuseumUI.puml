@@ -1,0 +1,29 @@
+@startuml
+class MuseumUI {
+    + titleShowTime : float = 3f
+    + totalWings : int = 8
+    + visitedLabel : string = "Wings visited"
+    + fadeSpeed : float = 4f
+    + ShowTitle(title:string) : void
+    + ShowInfo(text:string) : void
+    + HideInfo() : void
+    + ShowPrompt(text:string) : void
+    + HidePrompt() : void
+    + VisitWing(wingName:string) : void
+    + AddGem() : void
+    + GetGemCount() : int
+}
+class "UnityEvent`1"<T> {
+}
+MonoBehaviour <|-- MuseumUI
+MuseumUI --> "Instance" MuseumUI
+MuseumUI --> "titleGroup" CanvasGroup
+MuseumUI --> "titleText" TMP_Text
+MuseumUI --> "infoGroup" CanvasGroup
+MuseumUI --> "infoText" TMP_Text
+MuseumUI --> "promptGroup" CanvasGroup
+MuseumUI --> "promptText" TMP_Text
+MuseumUI --> "wingsText" TMP_Text
+MuseumUI --> "gemsText" TMP_Text
+MuseumUI o-> "onGemsChanged<int>" "UnityEvent`1"
+@enduml

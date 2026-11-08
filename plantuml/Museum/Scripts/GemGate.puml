@@ -1,0 +1,7 @@
+@startuml
+class GemGate {
+    + gemsNeeded : int = 3
+}
+MonoBehaviour <|-- GemGate
+GemGate o-> "onUnlocked" UnityEvent
+@enduml

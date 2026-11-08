@@ -1,0 +1,10 @@
+@startuml
+class LightSwitch {
+    + startOn : bool = false
+    + Toggle() : void
+    + SetOn(on:bool) : void
+}
+MonoBehaviour <|-- LightSwitch
+LightSwitch --> "onMaterial" Material
+LightSwitch --> "offMaterial" Material
+@enduml

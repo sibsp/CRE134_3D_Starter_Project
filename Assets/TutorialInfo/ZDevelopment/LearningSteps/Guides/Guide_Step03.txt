@@ -1,0 +1,232 @@
+=PAGE Lighting
+=SUB Set the time of day and guide the eye: a golden-hour sun, warm lanterns, coloured ambient light and a custom sky.
+
+Lighting is the biggest single change in the whole project. Same models, same materials, but now it's late afternoon: a low golden sun throws long shadows, warm lanterns line the path and the tower windows glow. Lighting decides the <b>mood</b>, the <b>time of day</b> and <b>where the player looks</b>.
+
+=IMG step02_hero|Step 02: flat, neutral light.
+
+=IMG step03_hero|Step 03: golden-hour sun, lanterns and sky.
+
+• <b>You will learn:</b> the light types in Unity; how a Directional Light works as the sun; Point Lights; shadows; ambient (environment) light; the skybox's role; using light to guide the player; changing lights from code.
+
+=PAGE The big idea
+We only see objects because light bounces off them into our eyes. A game engine imitates this. For every pixel it asks: <i>which lights reach this point, from what direction, how bright and what colour?</i> Then it combines that with the material from Step 02.
+
+Lighting has three jobs in a game:
+
+• <b>Mood and time.</b> A low orange sun says evening and calm. A high white sun says midday. Blue light says night or cold.
+
+• <b>Readability.</b> Shadows show shape and depth. Without them the world looks flat (look back at Step 02).
+
+• <b>Guidance.</b> Players move towards light. A line of lanterns along a path is an invisible signpost.
+
+=BOX #F2B65C|Real-world link
+Photographers call the hour before sunset the <b>golden hour</b>: the sun is low, the light is warm and soft, and shadows are long. It is one of the most flattering lights there is, which is why Lantern Grove uses it.
+=END
+
+=PAGE Key words
+<b><color=#F2B65C>Directional Light</color></b>: Light from very far away (the sun or moon). Every ray is parallel, so only its rotation matters, not its position.
+
+<b><color=#F2B65C>Point Light</color></b>: Light shining in all directions from a point, like a bulb or candle. Fades out over its <b>Range</b>.
+
+<b><color=#F2B65C>Spot Light</color></b>: A cone of light, like a torch or stage spotlight.
+
+<b><color=#F2B65C>Intensity</color></b>: How bright a light is.
+
+<b><color=#F2B65C>Range</color></b>: How far a Point or Spot Light reaches before fading to nothing.
+
+<b><color=#F2B65C>Shadows</color></b>: Hard (sharp edges), Soft (blurred edges) or None. Shadows cost performance.
+
+<b><color=#F2B65C>Ambient light</color></b>: Soft background light that fills in shadows so they're not pitch black; it represents light bouncing off the sky and ground.
+
+<b><color=#F2B65C>Skybox</color></b>: The image or shader drawn behind everything as the sky. It can also colour the ambient light and reflections.
+
+<b><color=#F2B65C>Real-time vs baked</color></b>: Real-time light is calculated every frame and can move. Baked light is pre-calculated into textures: cheaper, but static.
+
+=PAGE How Unity does it
+=H3 Light components
+
+Create lights from GameObject › Light. Each is a GameObject with a <b>Light</b> component. The main settings are Type, Colour, Intensity, Range (not for Directional) and Shadow Type.
+
+=H3 The sun: rotation is everything
+
+For a Directional Light, position does nothing. Only rotation matters:
+
+• <b>Rotation X</b> is how high the sun is. 0–20 = sunrise or sunset, 45 = mid-morning, 80–90 = midday overhead. Negative values point upwards (the sun is below the horizon).
+
+• <b>Rotation Y</b> is the compass direction the light comes from, which changes which way shadows fall.
+
+=H3 The Lighting window
+
+Open <b>Window › Rendering › Lighting</b> and choose the <b>Environment</b> tab. Here you set:
+
+• <b>Skybox Material</b>: the sky shader or image.
+
+• <b>Sun Source</b>: which Directional Light is “the sun”. The procedural sky draws its sun disc in the direction of this light.
+
+• <b>Environment Lighting › Source</b>: <i>Skybox</i> (colour taken from the sky), <i>Gradient</i> (three colours: Sky, Equator, Ground) or <i>Color</i> (one flat colour).
+
+=BOX #7FC6E0|Good to know
+In code and in the scene data the <i>Gradient</i> option is called <b>Trilight</b>, because it uses three colours: one for light from above, one from the horizon and one bouncing up from the ground.
+=END
+
+=PAGE What's in this scene
+<b>Sun (Golden Hour) – Directional</b><br><indent=4%><color=#9fe3ff>Count:</color> 1<br><color=#9fe3ff>Settings:</color> Rotation (24, 325, 0), colour #FFD19E, intensity 1.6, soft shadows<br><color=#9fe3ff>Purpose:</color> Low warm sun: long shadows, golden mood.</indent>
+
+<b>Lantern Light – Point</b><br><indent=4%><color=#9fe3ff>Count:</color> 11<br><color=#9fe3ff>Settings:</color> Range 6, intensity 1.3, #FFAD59, no shadows<br><color=#9fe3ff>Purpose:</color> Pools of warm light along the path.</indent>
+
+<b>Interior Light – Point</b><br><indent=4%><color=#9fe3ff>Count:</color> 4<br><color=#9fe3ff>Settings:</color> Range 6.5, intensity 2.2, #FFAD61, no shadows<br><color=#9fe3ff>Purpose:</color> Light inside buildings, spilling out of windows.</indent>
+
+<b>Gate Light – Point</b><br><indent=4%><color=#9fe3ff>Count:</color> 2<br><color=#9fe3ff>Settings:</color> Range 6, intensity 1.5, #FFAD59<br><color=#9fe3ff>Purpose:</color> Marks the entrance.</indent>
+
+<b>Door Light – Point</b><br><indent=4%><color=#9fe3ff>Count:</color> 4<br><color=#9fe3ff>Settings:</color> Range 7, intensity 2.5, #FFAD59<br><color=#9fe3ff>Purpose:</color> Makes the tower entrance the brightest spot: the goal.</indent>
+
+<b>Ring Glow – Point</b><br><indent=4%><color=#9fe3ff>Count:</color> 1<br><color=#9fe3ff>Settings:</color> Range 7, intensity 1.8, <b>blue</b> #A6D9FF<br><color=#9fe3ff>Purpose:</color> Cool, magical colour so the fairy ring feels different.</indent>
+
+<b>Ambient:</b> Gradient (Trilight). Sky #9EA8CC (soft blue), Equator #9E8C73 (warm), Ground #383D29 (dark green-brown, like light bouncing off grass). <b>Skybox:</b> LG_Sky, a Procedural sky with a warm tint and a small sun disc.
+
+=IMG step03_tower|The tower: the brightest and warmest spot in the scene, so the eye goes straight to it.
+
+=IMG step03_fairyring|The fairy ring uses a cool blue light, so it reads as “magic” against the warm lanterns.
+
+=BOX #7BC48A|Tip
+Notice that only the sun casts shadows. The 21 Point Lights have <b>Shadows: None</b>. Real-time shadows from many point lights are expensive, and you rarely notice they're missing. Also, URP limits how many lights can affect a single object (set in the URP Asset), which is another reason to keep small lights' ranges short.
+=END
+
+=PAGE Build it yourself
+<color=#F2B65C><b>1.</b></color> Select <b>Sun (Golden Hour)</b> in the Hierarchy (under Lighting). Note its rotation so you can put it back.
+
+<color=#F2B65C><b>2.</b></color> Drag Rotation X slowly from 24 to 80. Watch the shadows shorten and the sky change. Try 5: almost sunset. Put it back to 24.
+
+<color=#F2B65C><b>3.</b></color> Add a lantern light: GameObject › Light › <b>Point Light</b>. Move it next to a lantern, about 1.5 m off the ground.
+
+<color=#F2B65C><b>4.</b></color> Set Colour to a warm orange, Intensity to about 1.5 and Range to 6. Leave Shadow Type as <b>No Shadows</b>.
+
+<color=#F2B65C><b>5.</b></color> Drag the light onto the lantern in the Hierarchy so it becomes a <b>child</b>. Now if you move the lantern, its light moves too.
+
+<color=#F2B65C><b>6.</b></color> Make the lantern glass glow by giving it the LG_LanternGlow material (emission, from Step 02). Light + emission together is what makes a believable lamp.
+
+<color=#F2B65C><b>7.</b></color> Open Window › Rendering › Lighting › Environment. Change the Gradient Sky colour to deep blue and the Equator to purple. Instant dusk! Undo with Ctrl + Z.
+
+=BOX #E58A7A|Watch out
+Lights added in Play mode disappear when you stop. Build your lighting in Edit mode and press Play to check it.
+=END
+
+=PAGE The code
+A real flame flickers. This short script makes any light flicker gently, which is perfect for lanterns or a campfire.
+
+=CODE Flicker.cs
+using UnityEngine;
+
+// FLICKER: makes a light flicker gently, like a flame.
+[RequireComponent(typeof(Light))]
+public class Flicker : MonoBehaviour
+{
+    // ---------- Settings you can change in the Inspector ----------
+
+    // The dimmest and brightest the light will go.
+    public float minIntensity = 1.0f;
+    public float maxIntensity = 1.6f;
+
+    // How quickly it flickers.
+    public float speed = 3f;
+
+    // ---------- Private variables ----------
+
+    // The Light component on this object.
+    private Light lamp;
+
+    // A random starting point, so lanterns don't flicker in sync.
+    private float seed;
+
+
+    private void Start()
+    {
+        lamp = GetComponent<Light>();
+        seed = Random.Range(0f, 100f);
+    }
+
+
+    private void Update()
+    {
+        // Perlin noise is "smooth randomness": a number between 0 and 1
+        // that drifts up and down instead of jumping about.
+        float noise = Mathf.PerlinNoise(seed, Time.time * speed);
+
+        // Pick a brightness between min and max: noise 0 = min, noise 1 = max.
+        lamp.intensity = Mathf.Lerp(minIntensity, maxIntensity, noise);
+    }
+}
+=END
+
+<b>4</b>: <b>RequireComponent</b> means Unity won't let you add this script to an object without a Light.
+
+<b>27</b>: Finds the Light component on this same GameObject and stores it in <b>lamp</b>.
+
+<b>28</b>: Each lantern gets a random starting point, so they don't all flicker in time with each other.
+
+<b>36</b>: <b>Perlin noise</b> is smooth randomness: it drifts up and down rather than jumping, a bit like a flame.
+
+<b>39</b>: <b>Lerp</b> (linear interpolation) picks a value between min and max. noise = 0 gives min, noise = 1 gives max.
+
+And here's how you would move the sun from code, for example to make a simple day/night cycle (these lines go inside a class, like the one above):
+
+=CODE Rotating the sun
+// ---------- Settings you can change in the Inspector ----------
+public Light sun;
+public float degreesPerSecond = 2f;
+
+
+private void Update()
+{
+    // Tilt the sun a little each frame, around its X axis.
+    float degreesThisFrame = degreesPerSecond * Time.deltaTime;
+    sun.transform.Rotate(degreesThisFrame, 0f, 0f);
+}
+=END
+
+=PAGE Try this
+<color=#9fe3ff><b>1.</b></color> Rotate the Sun to midday (X = 80). How does the mood change? Which feels more like an adventure?
+
+<color=#9fe3ff><b>2.</b></color> Turn off one lantern's Point Light (untick the Light component). Compare it with its neighbours. What's lost?
+
+<color=#9fe3ff><b>3.</b></color> Window › Rendering › Lighting: change the ambient colours. Try making the shadows blue and the equator orange.
+
+<color=#9fe3ff><b>4.</b></color> <b>Stretch:</b> add the Flicker script to three lantern lights. Tune the min and max so it's subtle, not a disco.
+
+=PAGE Common problems
+<b>Shadows are pitch black.</b><br><indent=4%>Raise the ambient colours (Lighting window › Environment), especially Sky and Equator.</indent>
+
+<b>Moved the sun but nothing changed.</b><br><indent=4%>You changed its position. For a Directional Light only <b>rotation</b> matters.</indent>
+
+<b>A lantern light doesn't reach the ground.</b><br><indent=4%>Increase its Range, or move it closer to the ground.</indent>
+
+<b>Some objects ignore a nearby light.</b><br><indent=4%>Too many lights overlap that object. Shorten ranges or raise the per-object light limit in the URP Asset.</indent>
+
+<b>The scene got slow.</b><br><indent=4%>Turn off shadows on small lights and keep their ranges short.</indent>
+
+<b>The sky's sun disc is in the wrong place.</b><br><indent=4%>Lighting window › Environment › Sun Source must point at your Directional Light.</indent>
+
+=PAGE Check your understanding
+<color=#9fe3ff><b>Q1</b></color>  Why does moving a Directional Light's position do nothing?
+
+<color=#9fe3ff><b>Q2</b></color>  What would rotation X = 85 look like?
+
+<color=#9fe3ff><b>Q3</b></color>  Why does the fairy ring use a blue light when everything else is orange?
+
+<color=#9fe3ff><b>Q4</b></color>  What does Ambient (Gradient/Trilight) light do?
+
+<color=#9fe3ff><b>Q5</b></color>  Why do the Point Lights have shadows turned off?
+
+<i>Answers are on the next page. Have a go first!</i>
+
+=PAGE Answers
+<color=#9fe3ff><b>A1</b></color>  It represents a light infinitely far away; all rays are parallel, so only its direction (rotation) matters.
+
+<color=#9fe3ff><b>A2</b></color>  The sun almost directly overhead: short shadows, bright midday light.
+
+<color=#9fe3ff><b>A3</b></color>  Contrast: a different colour makes it feel magical and draws attention to it as a special place.
+
+<color=#9fe3ff><b>A4</b></color>  Adds soft fill light from the sky, horizon and ground so shadowed areas aren't completely black.
+
+<color=#9fe3ff><b>A5</b></color>  Real-time shadows from many lights are expensive and barely noticeable at small ranges.

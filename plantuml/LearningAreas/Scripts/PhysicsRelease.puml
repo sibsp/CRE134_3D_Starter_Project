@@ -1,0 +1,7 @@
+@startuml
+class PhysicsRelease {
+    + Release() : void
+    + ResetBodies() : void
+}
+MonoBehaviour <|-- PhysicsRelease
+@enduml

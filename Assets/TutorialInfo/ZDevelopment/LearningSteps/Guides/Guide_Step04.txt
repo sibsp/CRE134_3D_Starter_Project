@@ -1,0 +1,230 @@
+=PAGE Fog and Atmosphere
+=SUB Add depth, hide the edge of the world and finish the look with post-processing: Bloom, Vignette and colour grading.
+
+Step 04 adds two things that work on the whole picture rather than on single objects. <b>Fog</b> makes distant things fade into a warm haze. A <b>post-processing Volume</b> then treats the finished image like a photo: soft glows around bright lights, darker corners and a gentle colour grade.
+
+=IMG step04_nofog|Without fog or post-processing.
+
+=IMG step04_longview|With linear fog and the Atmosphere Volume.
+
+• <b>You will learn:</b> what fog does for depth and performance; the three fog modes; what post-processing is; Volumes and overrides; Bloom, Vignette and Color Adjustments; changing fog and effects from code.
+
+=PAGE The big idea
+In the real world, air isn't perfectly clear. Dust and moisture scatter light, so far-away hills look paler and bluer (or, at sunset, warmer) than nearby ones. Artists call this <b>atmospheric perspective</b>, and our brains use it to judge distance. Without it, a game world looks like a cardboard model with every tree equally sharp.
+
+Fog also hides the <b>edge of the world</b>. Lantern Grove's ground is a 160 m square, so it has an edge. Fog fades the distance out before the player can see the cliff edge, so the forest feels endless.
+
+<b>Post-processing</b> is a separate idea: once the camera has drawn the image, Unity runs extra effects over the whole picture, exactly like a filter on a phone photo.
+
+=BOX #F2B65C|Real-world link
+Look at any landscape photo with hills behind hills. Each ridge is paler than the one in front. That's fog doing real work. Film colourists also “grade” every shot, warming or cooling it to set the mood. That's post-processing.
+=END
+
+=PAGE Key words
+<b><color=#F2B65C>Fog</color></b>: Blends objects towards a fog colour the further they are from the camera.
+
+<b><color=#F2B65C>Linear fog</color></b>: No fog before <b>Start</b> distance, full fog at <b>End</b> distance, a straight fade between. Easy to control.
+
+<b><color=#F2B65C>Exponential fog</color></b>: Fog builds up smoothly from the camera based on a <b>Density</b> value. Squared is thicker at distance.
+
+<b><color=#F2B65C>Atmospheric perspective</color></b>: Distant objects looking paler and hazier: a key depth cue.
+
+<b><color=#F2B65C>Post-processing</color></b>: Effects applied to the whole finished image: glow, colour, blur, vignette.
+
+<b><color=#F2B65C>Volume</color></b>: A component that holds post-processing settings. <b>Global</b> volumes affect everywhere; local ones only inside their collider.
+
+<b><color=#F2B65C>Volume Profile</color></b>: The asset that stores a list of effects (called <b>overrides</b>) and their settings.
+
+<b><color=#F2B65C>Bloom</color></b>: Makes very bright pixels bleed light into their surroundings, so lanterns and emission glow.
+
+<b><color=#F2B65C>Vignette</color></b>: Darkens the corners of the screen, pulling the eye to the centre.
+
+<b><color=#F2B65C>Color Adjustments</color></b>: Contrast, saturation, colour filter: the basic colour grade.
+
+=PAGE How Unity does it
+=H3 Fog
+
+Fog lives in <b>Window › Rendering › Lighting › Environment</b>, under <b>Other Settings</b>. Tick <b>Fog</b>, pick a <b>Color</b> and a <b>Mode</b>. For Linear you set Start and End; for the Exponential modes you set Density. Fog is stored in the scene, so each scene can have its own.
+
+=H3 Post-processing
+
+<color=#F2B65C><b>1.</b></color> Create a Volume: GameObject › Volume › <b>Global Volume</b>.
+
+<color=#F2B65C><b>2.</b></color> In its Inspector, next to <b>Profile</b>, click <b>New</b> to create a Volume Profile asset (or drag an existing one in).
+
+<color=#F2B65C><b>3.</b></color> Click <b>Add Override</b> and pick an effect, for example Post-processing › Bloom.
+
+<color=#F2B65C><b>4.</b></color> Each setting has a small tick box on its left. Tick it to override that value, then change it.
+
+<color=#F2B65C><b>5.</b></color> Make sure the <b>camera</b> has <b>Post Processing</b> ticked (Camera component › Rendering). Otherwise you'll see no effects at all.
+
+=PAGE What's in this scene
+<b>Fog mode</b><br><indent=4%><color=#9fe3ff>Value:</color> Linear<br><color=#9fe3ff>Why:</color> Predictable: easy to say “clear for 25 m, gone by 150 m”.</indent>
+
+<b>Fog start / end</b><br><indent=4%><color=#9fe3ff>Value:</color> 25 m / 150 m<br><color=#9fe3ff>Why:</color> Nearby path stays crisp; the far forest and world edge fade out.</indent>
+
+<b>Fog colour</b><br><indent=4%><color=#9fe3ff>Value:</color> #DBBD99 (warm sand)<br><color=#9fe3ff>Why:</color> Matches the golden-hour sky near the horizon, so fog blends into the sky.</indent>
+
+The <b>LAYER 04 - Atmosphere Volume</b> object is a <b>global</b> Volume using the profile <b>LG_AtmosphereProfile</b> (in <i>Assets/LearningSteps</i>):
+
+<b>Bloom</b><br><indent=4%><color=#9fe3ff>Settings used:</color> Threshold 1, Intensity 0.7, Scatter 0.65, warm Tint<br><color=#9fe3ff>Effect:</color> Only pixels brighter than 1 (HDR emission, the sun) glow. That's why Step 02's lantern glass now has a halo.</indent>
+
+<b>Vignette</b><br><indent=4%><color=#9fe3ff>Settings used:</color> Intensity 0.22, Smoothness 0.45, black<br><color=#9fe3ff>Effect:</color> Subtle dark corners that frame the view.</indent>
+
+<b>Color Adjustments</b><br><indent=4%><color=#9fe3ff>Settings used:</color> Contrast +6, Saturation +8, warm cream Colour Filter<br><color=#9fe3ff>Effect:</color> A gentle grade: slightly richer and warmer.</indent>
+
+=IMG step04_hero|Fog fades the far trees; Bloom softens the bright sky and lanterns.
+
+=BOX #7BC48A|Tip
+Subtle is the goal. Each override here is turned up only a little. If a player notices the effect, it's usually too strong. Toggle the whole Volume on and off (tick box next to its name) to compare.
+=END
+
+=PAGE Build it yourself
+<color=#F2B65C><b>1.</b></color> Open the Lighting window › Environment › Other Settings. Note the current fog values.
+
+<color=#F2B65C><b>2.</b></color> Set <b>End</b> to 60. The world closes in: spooky. Try 400: the edge of the world appears. Set it back to 150.
+
+<color=#F2B65C><b>3.</b></color> Change <b>Mode</b> to <b>Exponential</b> and set Density to 0.02. Compare the feel with Linear.
+
+<color=#F2B65C><b>4.</b></color> Change the fog colour to a cold blue-grey. Does the scene now feel like a different time of day? Undo with Ctrl + Z.
+
+<color=#F2B65C><b>5.</b></color> Select <b>LAYER 04 - Atmosphere Volume</b>. Untick <b>Bloom</b> (the toggle in its header) and look at a lantern. Tick it again.
+
+<color=#F2B65C><b>6.</b></color> Click <b>Add Override</b> › Post-processing › <b>Depth Of Field</b>. Set Mode to Gaussian, Start 20, End 60. Far things blur like a camera lens. Remove it again with the three-dot menu if you don't like it.
+
+=BOX #E58A7A|Watch out
+Volume Profiles are assets. Changing LG_AtmosphereProfile changes it in <i>every</i> scene that uses it (Steps 04–10). Duplicate it (Ctrl + D) and assign the copy if you want to experiment.
+=END
+
+=PAGE The code
+Both fog and post-processing can change while the game runs. This script thickens the fog and darkens the vignette when the player enters a spooky area (it uses a trigger, which you'll learn fully in Step 09).
+
+=CODE SpookyZone.cs
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+
+// SPOOKY ZONE: thickens the fog and darkens the screen edges while
+// the player is inside this trigger.
+public class SpookyZone : MonoBehaviour
+{
+    // ---------- Settings you can change in the Inspector ----------
+
+    // Drag the Atmosphere Volume in here.
+    public Volume volume;
+
+    // How far you can see inside the zone (smaller = thicker fog).
+    public float spookyFogEnd = 40f;
+
+    // ---------- Private variables ----------
+
+    // The scene's normal fog distance, so we can put it back.
+    private float normalFogEnd;
+
+
+    private void Start()
+    {
+        normalFogEnd = RenderSettings.fogEndDistance;
+    }
+
+
+    // The player walked in: thick fog, dark edges.
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") == false)
+        {
+            return;
+        }
+
+        RenderSettings.fogEndDistance = spookyFogEnd;
+        SetVignette(0.45f);
+    }
+
+
+    // The player walked out: back to normal.
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player") == false)
+        {
+            return;
+        }
+
+        RenderSettings.fogEndDistance = normalFogEnd;
+        SetVignette(0.22f);
+    }
+
+
+    // Change how dark the edges of the screen are (the Vignette effect).
+    private void SetVignette(float amount)
+    {
+        Vignette vignette;
+
+        // TryGet looks for a Vignette in the profile. If it finds one,
+        // it puts it in "vignette" and gives back true.
+        if (volume.profile.TryGet(out vignette))
+        {
+            vignette.intensity.value = amount;
+        }
+    }
+}
+=END
+
+<b>2–3</b>: Extra <b>using</b> lines so the script can see the Volume and the URP effect types such as Vignette.
+
+<b>25</b>: <b>RenderSettings</b> holds the scene's Lighting window values: fog, ambient light, skybox. We remember the normal fog end.
+
+<b>30, 43</b>: Called automatically when something enters or leaves this object's trigger collider.
+
+<b>32–35</b>: Ignore anything that isn't the player (the player is tagged <b>Player</b>). <b>return</b> means “stop here”.
+
+<b>38, 51</b>: Both use our own method <b>SetVignette</b> (line 56), so the vignette code is only written once.
+
+<b>58–65</b>: <b>TryGet</b> looks for a Vignette override in the profile. If found, it's stored in <b>vignette</b> and we change its intensity. <b>out</b> means “the method fills this variable in for us”.
+
+=BOX #7FC6E0|Good to know
+<b>volume.profile</b> makes a temporary copy of the profile for this play session, so your changes don't overwrite the asset. <b>volume.sharedProfile</b> would edit the real asset permanently.
+=END
+
+=PAGE Try this
+<color=#9fe3ff><b>1.</b></color> Lighting window › Environment: set Fog End to 60. How does it change the feeling of the walk?
+
+<color=#9fe3ff><b>2.</b></color> Select the Atmosphere Volume and toggle Bloom on and off. Look at the lanterns and the sun.
+
+<color=#9fe3ff><b>3.</b></color> Change the fog colour to blue. What time of day does it feel like now? Why doesn't it match the sky any more?
+
+<color=#9fe3ff><b>4.</b></color> <b>Stretch:</b> add a Color Adjustments Hue Shift of 20 and a Saturation of −30. You've made a “memory” or “dream” look.
+
+=PAGE Common problems
+<b>No post-processing visible at all.</b><br><indent=4%>Tick <b>Post Processing</b> on the camera, and check the Volume's Weight is 1 and its Profile isn't empty.</indent>
+
+<b>Bloom does nothing.</b><br><indent=4%>Nothing is brighter than the Threshold. Raise emission intensity on materials, or lower the Threshold.</indent>
+
+<b>Fog makes distant sky look wrong.</b><br><indent=4%>Fog colour doesn't match the skybox horizon. Pick a colour sampled from the sky.</indent>
+
+<b>Fog shows in Scene view but not Game view (or the reverse).</b><br><indent=4%>Check the Scene view's effects toggle (the picture icon in its toolbar).</indent>
+
+<b>Effect too strong on some screens.</b><br><indent=4%>Check on a second monitor or laptop; aim for subtle.</indent>
+
+=PAGE Check your understanding
+<color=#9fe3ff><b>Q1</b></color>  Give two reasons for adding fog.
+
+<color=#9fe3ff><b>Q2</b></color>  With Linear fog Start 25 and End 150, how foggy is a tree 10 m away? 200 m away?
+
+<color=#9fe3ff><b>Q3</b></color>  Why is the fog colour warm sand rather than grey?
+
+<color=#9fe3ff><b>Q4</b></color>  Why does Bloom make lantern glass glow but not grass?
+
+<color=#9fe3ff><b>Q5</b></color>  Global vs local Volume?
+
+<i>Answers are on the next page. Have a go first!</i>
+
+=PAGE Answers
+<color=#9fe3ff><b>A1</b></color>  It adds depth (atmospheric perspective) and hides the edge of the world / distant pop-in.
+
+<color=#9fe3ff><b>A2</b></color>  10 m: no fog. 200 m: completely fogged.
+
+<color=#9fe3ff><b>A3</b></color>  To match the golden-hour sky at the horizon, so fogged distance blends into the sky.
+
+<color=#9fe3ff><b>A4</b></color>  Bloom only affects pixels brighter than its Threshold; HDR emission is, grass isn't.
+
+<color=#9fe3ff><b>A5</b></color>  A global Volume affects the whole scene; a local one only applies inside its collider (e.g. a cave).

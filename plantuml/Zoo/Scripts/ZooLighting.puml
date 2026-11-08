@@ -1,0 +1,19 @@
+@startuml
+class ZooLighting {
+    + Apply(index:int) : void
+}
+class Preset {
+    + name : string = "Day"
+    + sunIntensity : float = 1.3f
+    + lampsOn : bool = false
+}
+MonoBehaviour <|-- ZooLighting
+ZooLighting --> "sun" Light
+ZooLighting o-> "cycleKey" Key
+ZooLighting +-- Preset
+Preset o-> "sunAngles" Vector3
+Preset o-> "sunColour" Color
+Preset o-> "skyAmbient" Color
+Preset o-> "equatorAmbient" Color
+Preset o-> "groundAmbient" Color
+@enduml

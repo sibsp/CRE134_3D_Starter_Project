@@ -1,0 +1,43 @@
+@startuml
+class SkyboxPad {
+    + sunIntensity : float = 1f
+    + Apply() : void
+}
+MonoBehaviour <|-- SkyboxPad
+SkyboxPad --> "skybox" Material
+SkyboxPad --> "sun" Light
+SkyboxPad o-> "sunRotation" Vector3
+SkyboxPad o-> "sunColour" Color
+SkyboxPad o-> "ambientSky" Color
+SkyboxPad o-> "ambientEquator" Color
+SkyboxPad o-> "ambientGround" Color
+SkyboxPad o-> "fogColour" Color
+SkyboxPad --> "padRenderer" Renderer
+SkyboxPad o-> "idleGlow" Color
+SkyboxPad o-> "activeGlow" Color
+class StepGuideViewer {
+    + stepLabel : string = "STEP 01"
+    + showHint : bool = true
+    + SetOpen(open:bool) : void
+    + IsGuideOpen() : bool
+    + GetPageCount() : int
+    + PreviewPage(index:int) : void
+}
+class Block {
+    + kind : string = ""
+    + text : string = ""
+    + extra : string = ""
+}
+class Page {
+    + title : string = ""
+}
+class "List`1"<T> {
+}
+MonoBehaviour <|-- StepGuideViewer
+StepGuideViewer --> "guide" TextAsset
+StepGuideViewer o-> "openKey" Key
+StepGuideViewer +-- Block
+Block o-> "lines<string>" "List`1"
+StepGuideViewer +-- Page
+Page o-> "blocks<Block>" "List`1"
+@enduml

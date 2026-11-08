@@ -1,0 +1,222 @@
+=PAGE Audio
+=SUB Make the world sound alive: 2D ambience, 3D sounds that fade with distance, and an echo inside the tower.
+
+Sound is half of how a place feels, and it is the cheapest way to make a world seem alive. Step 06 adds seven <b>Audio Sources</b>: wind and birds everywhere, a babbling stream, frogs at the pond, birds in the woods, chimes at the fairy ring and a crackling fire at the beacon. It also adds an echo inside the tower.
+
+=BOX #E58A7A|Watch out
+<b>The Audio Sources in this scene start empty.</b> They are set up and positioned for you, but you add the sound clips yourself. That's the main task for this step: find or record sounds, import them and drag them into place.
+=END
+
+=IMG step06_stream|The stream by the footbridge. Its Audio Source sits right on the water, so the sound gets louder as you approach the bridge.
+
+• <b>You will learn:</b> Audio Clips, Sources and the Listener; 2D vs 3D sound; distance and rolloff; Reverb Zones; where to find free sounds legally; good import settings; playing sounds from code.
+
+=PAGE The big idea
+Unity's audio works like a microphone and some speakers placed in your world. The <b>Audio Listener</b> is the microphone (or the player's ears). It sits on the camera. Every <b>Audio Source</b> is a speaker playing an <b>Audio Clip</b> (a sound file).
+
+Some sounds should be the same wherever you stand: wind, distant birdsong, music. These are <b>2D</b> sounds. Others belong to a place: the stream, a fire. These are <b>3D</b> sounds. Unity makes them quieter as you walk away and pans them left or right depending on which way you're facing. With your eyes closed you could find the stream by ear.
+
+=BOX #F2B65C|Real-world link
+Stand in a park with your eyes shut. There's a general hum (2D ambience: wind, traffic) plus specific sounds you can point to: a dog to the left, a fountain ahead (3D). Sound designers build game worlds the same way, in layers.
+=END
+
+=PAGE Key words
+<b><color=#F2B65C>Audio Clip</color></b>: A sound file (.wav, .mp3, .ogg) imported into the project.
+
+<b><color=#F2B65C>Audio Source</color></b>: A component that plays a clip from a GameObject's position.
+
+<b><color=#F2B65C>Audio Listener</color></b>: The “ears”. Usually on the main camera. There must be exactly one in a scene.
+
+<b><color=#F2B65C>Spatial Blend</color></b>: 0 = 2D (same everywhere), 1 = 3D (positioned in the world). In between mixes the two.
+
+<b><color=#F2B65C>Min Distance</color></b>: Within this distance a 3D sound plays at full volume.
+
+<b><color=#F2B65C>Max Distance</color></b>: Beyond this a 3D sound is silent (with Linear rolloff) or at its quietest.
+
+<b><color=#F2B65C>Rolloff</color></b>: The curve of how volume drops with distance: Logarithmic (realistic), Linear (predictable) or Custom.
+
+<b><color=#F2B65C>Loop</color></b>: Repeat the clip forever. Essential for ambience.
+
+<b><color=#F2B65C>Play On Awake</color></b>: Start playing as soon as the scene starts.
+
+<b><color=#F2B65C>Reverb Zone</color></b>: An area that adds echo to sounds the listener hears while inside it.
+
+=PAGE How Unity does it
+Add Component › Audio › <b>Audio Source</b>. Drag a clip into its <b>Audio Resource</b> slot. The settings you'll use:
+
+<b>Audio Resource</b><br><indent=4%><color=#9fe3ff>Where:</color> Top<br><color=#9fe3ff>Use:</color> The clip to play.</indent>
+
+<b>Play On Awake / Loop</b><br><indent=4%><color=#9fe3ff>Where:</color> Top<br><color=#9fe3ff>Use:</color> Both ticked for ambience.</indent>
+
+<b>Volume</b><br><indent=4%><color=#9fe3ff>Where:</color> Top<br><color=#9fe3ff>Use:</color> 0–1. Keep ambience lower than important sounds.</indent>
+
+<b>Spatial Blend</b><br><indent=4%><color=#9fe3ff>Where:</color> Middle<br><color=#9fe3ff>Use:</color> Drag to 1 for 3D, 0 for 2D.</indent>
+
+<b>Min / Max Distance, Volume Rolloff</b><br><indent=4%><color=#9fe3ff>Where:</color> 3D Sound Settings (expand it)<br><color=#9fe3ff>Use:</color> Controls how far the sound carries. A yellow sphere in the Scene view shows Max Distance.</indent>
+
+For echo, add GameObject › Audio › <b>Audio Reverb Zone</b> and pick a <b>Reverb Preset</b> such as Cave, Hallway or Stone Corridor.
+
+=PAGE What's in this scene
+Everything lives under <b>LAYER 06 - Audio</b>. All Sources are set to Loop and Play On Awake with <b>Linear</b> rolloff and Min Distance 2 m.
+
+<b>Ambience - Wind & Birds (2D)</b><br><indent=4%><color=#9fe3ff>Type:</color> 2D, volume 0.6<br><color=#9fe3ff>Max distance:</color> –<br><color=#9fe3ff>Suggested sound:</color> Gentle wind with distant birdsong, loopable, 1–2 minutes long.</indent>
+
+<b>Stream - Water (3D)</b><br><indent=4%><color=#9fe3ff>Type:</color> 3D<br><color=#9fe3ff>Max distance:</color> 25 m<br><color=#9fe3ff>Suggested sound:</color> Babbling brook.</indent>
+
+<b>Stream - Water West (3D)</b><br><indent=4%><color=#9fe3ff>Type:</color> 3D<br><color=#9fe3ff>Max distance:</color> 25 m<br><color=#9fe3ff>Suggested sound:</color> The same or a second brook clip, so the stream sounds long.</indent>
+
+<b>Pond - Frogs (3D)</b><br><indent=4%><color=#9fe3ff>Type:</color> 3D<br><color=#9fe3ff>Max distance:</color> 18 m<br><color=#9fe3ff>Suggested sound:</color> Frogs and crickets.</indent>
+
+<b>Forest Birds (3D)</b><br><indent=4%><color=#9fe3ff>Type:</color> 3D, 6 m up in the trees<br><color=#9fe3ff>Max distance:</color> 30 m<br><color=#9fe3ff>Suggested sound:</color> Woodland birds, louder than the ambience.</indent>
+
+<b>Fairy Ring - Chimes (3D)</b><br><indent=4%><color=#9fe3ff>Type:</color> 3D<br><color=#9fe3ff>Max distance:</color> 12 m<br><color=#9fe3ff>Suggested sound:</color> Wind chimes or a soft magical shimmer.</indent>
+
+<b>Beacon - Fire Crackle (3D)</b><br><indent=4%><color=#9fe3ff>Type:</color> 3D, at the top of the tower<br><color=#9fe3ff>Max distance:</color> 20 m<br><color=#9fe3ff>Suggested sound:</color> Campfire crackle.</indent>
+
+<b>Tower Echo (Reverb Zone)</b> sits inside the watchtower with the <b>Stone Corridor</b> preset, Min Distance 3 and Max 5. Inside 3 m you get the full echo; it fades out between 3 and 5 m from its centre. The <b>Audio Listener</b> is on <i>MainCamera</i> inside the player.
+
+=BOX #7BC48A|Tip
+Notice the max distances are all different. Small, delicate sounds (chimes, 12 m) only reach a little way, so walking up to the fairy ring is a discovery. Big sounds (birds, 30 m) carry further. Overlapping sound zones make the walk feel like it moves through different places.
+=END
+
+=PAGE Finding sounds (legally)
+• <b>Freesound.org</b>: huge library; check each sound's licence (CC0 means free for anything; CC-BY means credit the author).
+
+• <b>Pixabay sound effects</b> and <b>Sonniss GDC bundles</b>: free game-ready packs.
+
+• <b>The Unity Asset Store</b>: search “free nature ambience”.
+
+• <b>Record your own</b> with a phone: running taps, crunching leaves, a fire. It's often the most original option.
+
+=BOX #7FC6E0|Good to know
+Keep a simple <b>credits.txt</b> listing each sound, where it came from and its licence. You'll need it for assessments and for anything you publish.
+=END
+
+=PAGE Build it yourself
+<color=#F2B65C><b>1.</b></color> Make a folder <b>Assets/MyAudio</b> and drag your sound files into it from Windows Explorer.
+
+<color=#F2B65C><b>2.</b></color> Click a clip to see its <b>Import Settings</b>. For 3D sounds tick <b>Force To Mono</b> (stereo can't be positioned properly). For long ambience loops set <b>Load Type</b> to <b>Streaming</b>; for short sounds leave it as Decompress On Load. Click Apply.
+
+<color=#F2B65C><b>3.</b></color> Select <b>Stream - Water (3D)</b> in the Hierarchy and drag your brook clip into its Audio Resource slot.
+
+<color=#F2B65C><b>4.</b></color> Press Play and walk from the start to the bridge. You should hear the stream fade in from about 25 m away.
+
+<color=#F2B65C><b>5.</b></color> While playing, drag Spatial Blend to 0. The stream is now equally loud everywhere. That's 2D. Stop Play and it resets to 1.
+
+<color=#F2B65C><b>6.</b></color> Fill the other Sources the same way. Set the 2D ambience volume low (0.3–0.6) so 3D sounds stand out.
+
+<color=#F2B65C><b>7.</b></color> Walk into the tower. The Reverb Zone should add echo to the fire and your surroundings. Try other presets: Cave, Arena, Bathroom.
+
+=PAGE The code
+Loops play by themselves. One-off sounds (a footstep, a pickup, a door) are usually triggered by code. This script plays a sound when something hits a crate hard, building on Step 05.
+
+=CODE ImpactSound.cs
+using UnityEngine;
+
+// IMPACT SOUND: plays a thud when something hits this object hard.
+// Harder hits are louder.
+[RequireComponent(typeof(AudioSource))]
+public class ImpactSound : MonoBehaviour
+{
+    // ---------- Settings you can change in the Inspector ----------
+
+    // Drag several thud sounds in here (a few variations sound more natural).
+    public AudioClip[] thuds;
+
+    // Hits slower than this (metres per second) make no sound.
+    public float minSpeed = 1.5f;
+
+    // ---------- Private variables ----------
+
+    // The Audio Source on this object, which plays the sounds.
+    private AudioSource source;
+
+
+    private void Start()
+    {
+        source = GetComponent<AudioSource>();
+    }
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        // How hard was the hit? Ignore small bumps.
+        float speed = collision.relativeVelocity.magnitude;
+        if (speed < minSpeed)
+        {
+            return;
+        }
+
+        // No sounds in the list? Nothing to play.
+        if (thuds.Length == 0)
+        {
+            return;
+        }
+
+        // Pick a random sound from the list.
+        int randomIndex = Random.Range(0, thuds.Length);
+        AudioClip clip = thuds[randomIndex];
+
+        // A tiny random change in pitch makes each thud sound slightly different.
+        source.pitch = Random.Range(0.9f, 1.1f);
+
+        // Harder hits are louder. Clamp01 keeps the volume between 0 and 1.
+        float volume = Mathf.Clamp01(speed / 8f);
+        source.PlayOneShot(clip, volume);
+    }
+}
+=END
+
+<b>11</b>: An <b>array</b> (a list) of clips, shown by the <b>[ ]</b>. Using a few variations stops repeated sounds getting annoying.
+
+<b>31–35</b>: How hard was the hit? Ignore small bumps.
+
+<b>44–45</b>: Pick a random clip from the list. <b>Random.Range</b> with whole numbers never returns the top value, so it fits the list perfectly. <b>thuds[randomIndex]</b> means “the item at that position in the list” (the first item is 0).
+
+<b>48</b>: A tiny random pitch change makes each thud sound slightly different.
+
+<b>51–52</b>: <b>PlayOneShot</b> plays a clip without stopping any sound already playing. Harder hits are louder (volume 0–1).
+
+=PAGE Try this
+<color=#9fe3ff><b>1.</b></color> Drag a stream sound into <b>Stream - Water (3D)</b> and walk away from it. Where does it go silent?
+
+<color=#9fe3ff><b>2.</b></color> Change its Spatial Blend from 1 (3D) to 0 (2D). What's different? Which feels more real?
+
+<color=#9fe3ff><b>3.</b></color> Walk into the tower. Can you hear the Reverb Zone? Try a different Reverb Preset.
+
+<color=#9fe3ff><b>4.</b></color> <b>Stretch:</b> add an Audio Source to the beacon in Step 09 so it plays a “whoosh” only when it lights up (Play On Awake off, called by an event).
+
+=PAGE Common problems
+<b>No sound at all.</b><br><indent=4%>Is there a clip in the Source? Is the Game view's <b>Mute Audio</b> button on? Is there an Audio Listener on the camera?</indent>
+
+<b>Console: “There are 2 audio listeners in the scene”.</b><br><indent=4%>You added a second camera. Remove the Audio Listener from one of them.</indent>
+
+<b>3D sound doesn't pan or fade.</b><br><indent=4%>Spatial Blend is 0, or the clip is stereo: tick Force To Mono in its import settings.</indent>
+
+<b>Sound is too quiet even up close.</b><br><indent=4%>Raise Min Distance (the full-volume zone) or the volume.</indent>
+
+<b>Loop has a click or gap.</b><br><indent=4%>The clip isn't cut cleanly. Trim it in Audacity (free) so the end flows into the start.</indent>
+
+=PAGE Check your understanding
+<color=#9fe3ff><b>Q1</b></color>  What are the Audio Source and the Audio Listener?
+
+<color=#9fe3ff><b>Q2</b></color>  Why is the wind ambience 2D but the stream 3D?
+
+<color=#9fe3ff><b>Q3</b></color>  The chimes reach 12 m but the forest birds 30 m. Why make them different?
+
+<color=#9fe3ff><b>Q4</b></color>  What does the Reverb Zone in the tower do?
+
+<color=#9fe3ff><b>Q5</b></color>  Why tick Force To Mono for 3D clips?
+
+<i>Answers are on the next page. Have a go first!</i>
+
+=PAGE Answers
+<color=#9fe3ff><b>A1</b></color>  The Source is a speaker playing a clip; the Listener is the ears, on the camera.
+
+<color=#9fe3ff><b>A2</b></color>  Wind is everywhere; the stream belongs to one place and should get louder as you approach.
+
+<color=#9fe3ff><b>A3</b></color>  Small sounds shouldn't carry far; it makes approaching the fairy ring a discovery.
+
+<color=#9fe3ff><b>A4</b></color>  Adds a stone-corridor echo to what the listener hears while inside the tower.
+
+<color=#9fe3ff><b>A5</b></color>  Unity positions a 3D sound itself; stereo files don't pan correctly.

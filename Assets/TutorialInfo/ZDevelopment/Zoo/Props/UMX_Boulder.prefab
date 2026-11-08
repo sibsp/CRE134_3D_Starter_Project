@@ -1,0 +1,262 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &939876186961044929
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4837934186161551961}
+  - component: {fileID: 5898896343656691311}
+  - component: {fileID: 6278936414450092457}
+  - component: {fileID: 8017444545198562908}
+  - component: {fileID: 2846635707140325391}
+  m_Layer: 0
+  m_Name: UMX_Boulder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4837934186161551961
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 939876186961044929}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5898896343656691311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 939876186961044929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1692686999, guid: 355474d781e5561489e3595e39866770, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Tripolygon.UModelerX.Runtime.dll::Tripolygon.UModelerX.Runtime.UMXParametricShape
+  guid: 38d645b1-1c83-4468-8f27-e9c375a7f74d
+  bakedMesh: {fileID: 4300000, guid: 1d0bd02e01aafd949b906a8b0b593cfa, type: 2}
+  modifiers:
+    rid: -2
+  modifierSaveData: []
+  pivot: {x: 0, y: 0, z: 0}
+  pivotMode: 0
+  pivotAnchor: {x: 0, y: 0, z: 0}
+  pivotPercent: {x: 0.5, y: 0.5, z: 0.5}
+  selfPivotMode: 0
+  selfPivotAnchor: {x: 0, y: 0, z: 0}
+  selfPivotPercent: {x: 0.5, y: 0.5, z: 0.5}
+  meshRotation: {x: 0, y: 0, z: 0}
+  effectivePivot: {x: 0, y: 0, z: 0}
+  sourceAABB:
+    m_Center: {x: 0.25012934, y: 0.9325586, z: -0.0032948256}
+    m_Extent: {x: 1.4233398, y: 0.9825586, z: 1.2623564}
+  shapeType: 23
+  polyhedronType: 0
+  text: Text
+  font: {fileID: 0}
+  material: {fileID: 2100000, guid: e00de335c8284f14e8cec9b1fed2feaf, type: 2}
+  hotspot: {fileID: 0}
+  width: 3
+  depth: 2.5
+  height: 1.8
+  radius: 1.6
+  radius1: 1
+  radius2: 0.25
+  thickness: 0.1
+  stepHeight: 0.2
+  stepWidth: 1
+  angle: 360
+  rotation: 0
+  segments: 12
+  sides: 12
+  rings: 12
+  order: 2
+  sweepAngle: 360
+  counterClockwise: 0
+  widthSegs: 1
+  depthSegs: 1
+  heightSegs: 1
+  heightSegment: 1
+  diskSegments: 12
+  heightSegments: 1
+  autoUnwrap: 1
+  objectMode: 0
+  roundness1: 1
+  roundness2: 1
+  controlsU: 4
+  controlsV: 4
+  controlPoints: []
+  controlWeights: []
+  appliedControlsU: 0
+  appliedControlsV: 0
+  closed: 0
+  curved: 0
+  ngonCurveType: 0
+  ngonPointCurveTypes: 
+  rockSettings:
+    seed: 3
+    asymmetryDirection: {x: 0.97014254, y: 0.24253564, z: 0}
+    asymmetryAmount: 0.12
+    stretchDirection: {x: 1, y: 0, z: 0}
+    stretchAmount: 0
+    compressionDirection: {x: 1, y: 0, z: 0}
+    compressionAmount: 0
+    compressionDistance: 0.75
+    compressionBlendDistance: 0.2
+    flattenTop: 0
+    flattenBottom: 0
+    groundFlatten: 0.55
+    groundEmbed: 0.05
+    largeNoise:
+      enabled: 1
+      frequency: 0.8
+      amplitude: 0.16
+      octaves: 2
+      lacunarity: 2
+      persistence: 0.5
+      offset: {x: 0, y: 0, z: 0}
+      seed: 11
+    mediumNoise:
+      enabled: 1
+      frequency: 2.1
+      amplitude: 0.07
+      octaves: 2
+      lacunarity: 2
+      persistence: 0.5
+      offset: {x: 0, y: 0, z: 0}
+      seed: 29
+    smallNoise:
+      enabled: 0
+      frequency: 5
+      amplitude: 0.025
+      octaves: 1
+      lacunarity: 2
+      persistence: 0.5
+      offset: {x: 0, y: 0, z: 0}
+      seed: 47
+    angularity: 0.15
+    automaticFacetCount: 4
+    facetStrength: 0.25
+    facetSizeVariation: 0.25
+    facets: []
+    lobes: []
+    ridgeNormal: {x: 0, y: 0, z: 1}
+    ridgeStrength: 0
+    ridgeSharpness: 6
+    flatShading: 0
+    writeVertexMasks: 0
+    previewMode: 1
+    previewSubdivision: 1
+    colliderMode: 0
+    colliderSubdivision: 1
+    lod:
+      enabled: 0
+      lod0Subdivision: 3
+      lod1Subdivision: 2
+      lod2Subdivision: 1
+      lod1ScreenHeight: 0.35
+      lod2ScreenHeight: 0.12
+  revolveProfile: []
+  colliderMode: 0
+  colliderModeApplied: 0
+  anchorOffset: {x: 0, y: 0, z: 0}
+  ratioParameters: []
+  lockedParameters: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!33 &6278936414450092457
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 939876186961044929}
+  m_Mesh: {fileID: 4300000, guid: 1d0bd02e01aafd949b906a8b0b593cfa, type: 2}
+--- !u!23 &8017444545198562908
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 939876186961044929}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: e00de335c8284f14e8cec9b1fed2feaf, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &2846635707140325391
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 939876186961044929}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 1d0bd02e01aafd949b906a8b0b593cfa, type: 2}

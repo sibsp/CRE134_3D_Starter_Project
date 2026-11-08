@@ -1,0 +1,223 @@
+=PAGE Colliders and Physics
+=SUB Make the world solid: what blocks the player, invisible walls and ramps, and crates that obey gravity and mass.
+
+Up to Step 04 you could walk straight through trees, rocks and animals. They were only pictures. Step 05 gives them <b>colliders</b>, invisible shapes the physics engine uses to decide what touches what. It also adds an invisible boundary, a hidden ramp on the tower stairs and three crates with <b>Rigidbodies</b> that you can push around.
+
+=IMG step05_crates|The three crates by the gate: 10 kg, 40 kg and 200 kg. Same size, same material, very different weight.
+
+• <b>You will learn:</b> the difference between what you see (renderer) and what you hit (collider); collider shapes and their costs; static vs dynamic objects; Rigidbody mass and gravity; how the player controller collides; invisible colliders as design tools; collision code.
+
+=PAGE The big idea
+A game object has two separate “bodies”. The <b>visual</b> one (the Mesh Renderer) is what you see: it can have thousands of triangles. The <b>physical</b> one (the Collider) is what the physics engine uses: usually a much simpler shape like a box, sphere or capsule. Checking whether two simple shapes overlap is fast; checking two detailed meshes is slow.
+
+The two don't have to match. A tree's leafy canopy has no collider at all (you can't climb it anyway), but its trunk has a simple invisible <b>capsule</b>. That's cheaper, and it feels better: the player slides smoothly around the trunk instead of snagging on bark.
+
+<b>Physics</b> is the next layer. Adding a <b>Rigidbody</b> to an object hands it over to the physics engine: it now has mass, falls under gravity, can be pushed and tumbles when it hits things.
+
+=BOX #F2B65C|Real-world link
+A theatre set is mostly painted flats. The audience sees a castle wall; the actors know which bits are solid enough to lean on. Colliders are the “solid bits” of your set, and they don't have to look like anything.
+=END
+
+=PAGE Key words
+<b><color=#F2B65C>Collider</color></b>: An invisible shape that defines where an object is solid.
+
+<b><color=#F2B65C>Box / Sphere / Capsule Collider</color></b>: Simple, fast primitive shapes. Use these whenever you can.
+
+<b><color=#F2B65C>Mesh Collider</color></b>: Uses an actual mesh as its shape. Accurate but more expensive; best for static scenery like the ground or walls.
+
+<b><color=#F2B65C>Convex</color></b>: A Mesh Collider option that wraps the mesh in a simplified shell with no dents. Required if the object has a Rigidbody.
+
+<b><color=#F2B65C>Static collider</color></b>: A collider with no Rigidbody. Never moves: ground, walls, trees.
+
+<b><color=#F2B65C>Rigidbody</color></b>: Makes an object dynamic: it has mass and responds to gravity, forces and collisions.
+
+<b><color=#F2B65C>Mass</color></b>: How heavy it is (in kilograms). Heavier things are harder to get moving.
+
+<b><color=#F2B65C>Is Kinematic</color></b>: A Rigidbody you move by script that pushes others but isn't pushed back.
+
+<b><color=#F2B65C>Is Trigger</color></b>: A collider you can pass through that reports when something enters it (used heavily in Step 09).
+
+<b><color=#F2B65C>Character Controller</color></b>: A special capsule collider for players: it walks, climbs steps and slides along walls, but isn't moved by physics.
+
+=PAGE How Unity does it
+Select an object and click <b>Add Component</b> › Physics › Box Collider (or Sphere, Capsule, Mesh). A green wireframe appears in the Scene view showing the collider shape. Click <b>Edit Collider</b> to drag its faces, or type Center and Size.
+
+Add <b>Add Component</b> › Physics › <b>Rigidbody</b> to make something fall and get pushed. The settings that matter most:
+
+<b>Mass</b>: Weight in kg. Default 1. Doesn't change how fast things fall (just like real life), but changes how hard they are to push.
+
+<b>Linear Damping</b>: Air resistance / friction slowing movement. 0 = slides forever on ice.
+
+<b>Angular Damping</b>: How quickly spinning slows down.
+
+<b>Use Gravity</b>: Tick to fall.
+
+<b>Is Kinematic</b>: Tick to move it only by script or animation (a moving platform).
+
+<b>Constraints</b>: Freeze movement or rotation on chosen axes, e.g. stop a crate tipping over.
+
+=BOX #7FC6E0|Good to know
+The player uses a <b>Character Controller</b>, not a Rigidbody. It stops at walls and walks up small steps (Step Offset 0.25 m) and slopes up to its Slope Limit (45°), but physics forces don't move it. To push crates, the Starter Assets add a small script, <b>Basic Rigid Body Push</b>, which you'll meet in the code section.
+=END
+
+=PAGE What's in this scene
+Before this step the scene had colliders only on the ground, path, bridge and a few large props. Step 05 adds:
+
+<b>172 tree trunks</b><br><indent=4%><color=#9fe3ff>How:</color> A child object called <b>Trunk Collider</b> with a Capsule Collider (radius 0.45, height 4). No renderer.<br><color=#9fe3ff>Why:</color> Solid trunks; canopies stay walk-through.</indent>
+
+<b>Animals (deer, fox, stag)</b><br><indent=4%><color=#9fe3ff>How:</color> One Box Collider each, named <b>Animal Collider</b>.<br><color=#9fe3ff>Why:</color> Cheap and good enough for a body.</indent>
+
+<b>Tower walls</b><br><indent=4%><color=#9fe3ff>How:</color> Mesh Colliders on each wall piece of <i>Tower Walls (hollow)</i>.<br><color=#9fe3ff>Why:</color> Accurate walls you can walk inside.</indent>
+
+<b>Stair banister</b><br><indent=4%><color=#9fe3ff>How:</color> <b>Banister Guard</b>: 46 small Box Colliders.<br><color=#9fe3ff>Why:</color> Stops you falling off the spiral stairs.</indent>
+
+<b>Stair ramp</b><br><indent=4%><color=#9fe3ff>How:</color> <b>Stair Ramp (invisible collider)</b>: a Mesh Collider with no renderer.<br><color=#9fe3ff>Why:</color> You walk up a smooth slope instead of bumping up every step.</indent>
+
+<b>Play Area Boundary</b><br><indent=4%><color=#9fe3ff>How:</color> Four invisible Box Colliders (North, South, East, West), 10 m high.<br><color=#9fe3ff>Why:</color> Keeps the player inside the 100 × 138 m play area.</indent>
+
+<b>Three crates</b><br><indent=4%><color=#9fe3ff>How:</color> Box Collider + Rigidbody with mass <b>10</b>, <b>40</b> and <b>200</b> kg.<br><color=#9fe3ff>Why:</color> A physics experiment you can feel.</indent>
+
+=BOX #7BC48A|Tip
+Want to see every collider? In the Scene view, open the <b>Gizmos</b> menu (top right of the Scene view) and make sure Collider gizmos are on. Select a tree and you'll see the green capsule around its trunk.
+=END
+
+=PAGE Build it yourself
+<color=#F2B65C><b>1.</b></color> <b>Turn on pushing.</b> Select <b>PlayerCapsule</b> (inside <i>Player (First Person)</i>). On the <b>Basic Rigid Body Push</b> component, tick <b>Can Push</b> and set <b>Push Layers</b> to <b>Default</b> (the crates' layer). Without this, the player walks into crates but can't move them.
+
+<color=#F2B65C><b>2.</b></color> Press Play and push each crate. Feel the difference. Stop Play.
+
+<color=#F2B65C><b>3.</b></color> Make your own crate: GameObject › 3D Object › <b>Cube</b>. It already has a Box Collider. Give it the LG_Wood material.
+
+<color=#F2B65C><b>4.</b></color> Add Component › <b>Rigidbody</b>. Set Mass to 5. Raise the cube 3 m into the air and press Play. It falls and lands.
+
+<color=#F2B65C><b>5.</b></color> Put a tree without a collider in your scene (or disable a <b>Trunk Collider</b>). Walk through it. Then add a <b>Capsule Collider</b>, click <b>Edit Collider</b> and shape it to the trunk only.
+
+<color=#F2B65C><b>6.</b></color> Make a ramp: a Cube rotated 20° on X. Walk up it. Try 50°: the Character Controller's Slope Limit stops you.
+
+<color=#F2B65C><b>7.</b></color> Make an invisible wall: a Cube where you want to block the player, then <b>untick its Mesh Renderer</b>. The collider stays.
+
+=BOX #E58A7A|Watch out
+Never scale a Rigidbody object to a negative size, and avoid Mesh Colliders on moving objects unless Convex is ticked. Both cause physics glitches. And don't use invisible walls in places a player would reasonably expect to walk: it feels unfair. Use fences, rocks or water to <i>show</i> the boundary where you can.
+=END
+
+=PAGE The code
+This is the Starter Assets script that lets the player push crates. It runs whenever the Character Controller bumps into something.
+
+=CODE BasicRigidBodyPush.cs (Starter Assets, simplified comments removed)
+public class BasicRigidBodyPush : MonoBehaviour
+{
+    public LayerMask pushLayers;
+    public bool canPush;
+    [Range(0.5f, 5f)] public float strength = 1.1f;
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (canPush) PushRigidBodies(hit);
+    }
+
+    private void PushRigidBodies(ControllerColliderHit hit)
+    {
+        Rigidbody body = hit.collider.attachedRigidbody;
+        if (body == null || body.isKinematic) return;
+
+        var bodyLayerMask = 1 << body.gameObject.layer;
+        if ((bodyLayerMask & pushLayers.value) == 0) return;
+
+        if (hit.moveDirection.y < -0.3f) return;
+
+        Vector3 pushDir = new Vector3(hit.moveDirection.x, 0.0f, hit.moveDirection.z);
+        body.AddForce(pushDir * strength, ForceMode.Impulse);
+    }
+}
+=END
+
+<b>3–5</b>: Settings: which layers can be pushed, an on/off switch, and how hard to push. <b>[Range]</b> turns the number into a slider.
+
+<b>7</b>: <b>OnControllerColliderHit</b> is called by Unity every time the Character Controller touches a collider while moving.
+
+<b>14–15</b>: Get the Rigidbody of what we hit. If there isn't one (a wall) or it's kinematic, stop here.
+
+<b>17–18</b>: A <b>LayerMask</b> check: only push objects on the chosen layers. This is why Push Layers must include Default.
+
+<b>20</b>: Don't push things we're standing on (moving downwards into them).
+
+<b>22</b>: Push only horizontally, in the direction we're walking.
+
+<b>23</b>: <b>AddForce</b> with <b>ForceMode.Impulse</b> gives a sudden shove. The physics engine divides it by mass, which is why the 200 kg crate barely moves.
+
+=BOX #7FC6E0|Good to know
+This script was written by Unity, not for this course, so it uses a more compact “professional” style than our own scripts: one-line <b>if</b> statements, <b>var</b>, and <b>&lt;&lt;</b> (a bit-shift used for layer masks). You don't need to write code like this. Our own scripts spell every step out on its own line.
+=END
+
+And here's a script you can add to a crate yourself. It reacts when something hits it hard:
+
+=CODE CrateThud.cs
+using UnityEngine;
+
+// CRATE THUD: prints a message when something hits this crate hard.
+public class CrateThud : MonoBehaviour
+{
+    // Unity calls this when another collider bumps into this one.
+    // "collision" holds the details of the hit.
+    private void OnCollisionEnter(Collision collision)
+    {
+        // How fast the two objects hit each other, in metres per second.
+        float speed = collision.relativeVelocity.magnitude;
+
+        // Ignore gentle bumps.
+        if (speed > 2f)
+        {
+            string otherName = collision.gameObject.name;
+            Debug.Log(name + " hit " + otherName + " at " + speed.ToString("0.0") + " m/s");
+        }
+    }
+}
+=END
+
+<b>OnCollisionEnter</b> runs when two colliders hit and at least one has a non-kinematic Rigidbody. <b>relativeVelocity.magnitude</b> is how fast they hit each other. In Step 06 you could play a thud sound here instead of logging.
+
+=PAGE Try this
+<color=#9fe3ff><b>1.</b></color> Push all three crates. Which is hardest, and why? Check their Mass in the Rigidbody component.
+
+<color=#9fe3ff><b>2.</b></color> Disable a tree's <b>Trunk Collider</b> (untick the object) and walk through the tree. Turn it back on.
+
+<color=#9fe3ff><b>3.</b></color> Find the invisible ramp under the tower stairs (Hierarchy search: <i>Stair Ramp</i>). Disable it and climb the stairs. Why is it there?
+
+<color=#9fe3ff><b>4.</b></color> <b>Stretch:</b> change the 10 kg crate's Linear Damping to 5. Then try a Physic Material with Friction 0 on it (Create › Physics Material).
+
+=PAGE Common problems
+<b>I can't push the crates.</b><br><indent=4%>On PlayerCapsule › Basic Rigid Body Push: tick Can Push and include the crates' layer in Push Layers.</indent>
+
+<b>Object falls through the floor.</b><br><indent=4%>The floor has no collider, or the object has a Rigidbody but no collider.</indent>
+
+<b>Rigidbody with Mesh Collider throws an error.</b><br><indent=4%>Tick <b>Convex</b> on the Mesh Collider, or use a Box/Capsule instead.</indent>
+
+<b>Player gets stuck on stairs.</b><br><indent=4%>Add an invisible ramp collider, or increase Step Offset on the Character Controller.</indent>
+
+<b>Crate jitters or explodes away on Play.</b><br><indent=4%>It starts overlapping another collider. Lift it slightly so it begins in free space.</indent>
+
+<b>OnCollisionEnter never runs.</b><br><indent=4%>Neither object has a non-kinematic Rigidbody, or one is set to Is Trigger (use OnTriggerEnter instead).</indent>
+
+=PAGE Check your understanding
+<color=#9fe3ff><b>Q1</b></color>  Why do the trees use a capsule on the trunk rather than a Mesh Collider on the whole tree?
+
+<color=#9fe3ff><b>Q2</b></color>  What turns a static object into one that falls and can be pushed?
+
+<color=#9fe3ff><b>Q3</b></color>  Do the 10 kg and 200 kg crates fall at different speeds?
+
+<color=#9fe3ff><b>Q4</b></color>  What is the Play Area Boundary and why is it invisible?
+
+<color=#9fe3ff><b>Q5</b></color>  Why does the spiral staircase need an invisible ramp?
+
+<i>Answers are on the next page. Have a go first!</i>
+
+=PAGE Answers
+<color=#9fe3ff><b>A1</b></color>  It's much cheaper to calculate and feels smoother; the canopy doesn't need to be solid.
+
+<color=#9fe3ff><b>A2</b></color>  Adding a Rigidbody (it also needs a collider).
+
+<color=#9fe3ff><b>A3</b></color>  No. Gravity accelerates them equally; mass changes how hard they are to push, not how fast they fall.
+
+<color=#9fe3ff><b>A4</b></color>  Four box colliders with no renderers that stop the player leaving the play area.
+
+<color=#9fe3ff><b>A5</b></color>  So the player walks smoothly up a slope instead of catching on each step.

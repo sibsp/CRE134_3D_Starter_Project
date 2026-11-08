@@ -1,0 +1,67 @@
+@startuml
+class AreaKit <<static>> {
+    + <<const>> SceneFolder : string = "Assets/Scenes/Learning Areas"
+    + <<const>> MatFolder : string = "Assets/LearningAreas/Materials"
+    + {static} NewScene(sceneName:string) : Scene
+    + {static} Save() : void
+    + {static} Group(groupName:string, parent:Transform) : Transform
+    + {static} Group(groupName:string) : Transform
+    + {static} Mat(materialName:string, colour:Color, smoothness:float) : Material
+    + {static} Mat(materialName:string, colour:Color, smoothness:float, metallic:float) : Material
+    + {static} GlowMat(materialName:string, colour:Color, smoothness:float, glowColour:Color) : Material
+    + {static} SeeThroughMat(materialName:string, colour:Color, smoothness:float) : Material
+    + {static} TexturedMat(materialName:string, colour:Color, smoothness:float, texture:Texture, tiling:Vector2) : Material
+    + {static} PatternTexture(textureName:string, colourA:Color, colourB:Color, pattern:string) : Texture2D
+    + {static} Shape(shapeType:string, objectName:string, parent:Transform, bottomCentre:Vector3, angles:Vector3, material:Material, settings:Dictionary<string, object>, addCollider:bool) : GameObject
+    + {static} Box(objectName:string, parent:Transform, centre:Vector3, size:Vector3, material:Material) : GameObject
+    + {static} Box(objectName:string, parent:Transform, centre:Vector3, size:Vector3, material:Material, yaw:float, addCollider:bool) : GameObject
+    + {static} Prim(primitiveType:PrimitiveType, objectName:string, parent:Transform, position:Vector3, scale:Vector3, material:Material, addCollider:bool, yaw:float) : GameObject
+    + {static} Room(roomName:string, centre:Vector3, size:Vector3, wall:Material, floor:Material, ceiling:Material, doorWidth:float, doorHeight:float, addCeiling:bool) : Transform
+    + {static} Model(assetPath:string, parent:Transform, position:Vector3, yaw:float, targetHeight:float) : GameObject
+    + {static} FindModel(fileName:string) : string
+    + {static} VFX(prefabName:string, parent:Transform, position:Vector3, scale:float) : GameObject
+    + {static} Bounds(target:GameObject) : Bounds
+    + {static} Sun(angles:Vector3, colour:Color, intensity:float, shadows:bool) : Light
+    + {static} Point(lightName:string, parent:Transform, position:Vector3, colour:Color, range:float, intensity:float, shadows:bool) : Light
+    + {static} Spot(lightName:string, parent:Transform, position:Vector3, lookAt:Vector3, colour:Color, range:float, angle:float, intensity:float, shadows:bool) : Light
+    + {static} Ambient(sky:Color, equator:Color, ground:Color, skybox:Material) : void
+    + {static} Text(parent:Transform, text:string, position:Vector3, yaw:float, size:float, colour:Color, width:float, height:float, alignment:TextAlignmentOptions) : TextMeshPro
+    + {static} Plaque(parent:Transform, text:string, position:Vector3, yaw:float) : void
+    + {static} NoticeBoard(position:Vector3, yaw:float, title:string, what:string, tasks:string[]) : void
+    + {static} AddPlayer(position:Vector3, yaw:float) : Transform
+    + {static} AddUI(title:string, showCounters:bool, visitedLabel:string, total:int) : MuseumUI
+    + {static} Zone(parent:Transform, zoneName:string, centre:Vector3, size:Vector3) : TriggerZone
+    + {static} InfoZone(ui:MuseumUI, title:string, info:string, centre:Vector3, size:Vector3, visitId:string) : TriggerZone
+}
+AreaKit --> "Root" Transform
+class FloatBob {
+    + height : float = 0.15f
+    + speed : float = 1f
+}
+MonoBehaviour <|-- FloatBob
+class LightFlicker {
+    + minIntensity : float = 1.5f
+    + maxIntensity : float = 3f
+    + speed : float = 10f
+}
+MonoBehaviour <|-- LightFlicker
+class LightningFlash {
+    + flashIntensity : float = 4f
+    + minWait : float = 5f
+    + maxWait : float = 12f
+}
+MonoBehaviour <|-- LightningFlash
+LightningFlash --> "thunder" AudioSource
+class PhysicsRelease {
+    + Release() : void
+    + ResetBodies() : void
+}
+MonoBehaviour <|-- PhysicsRelease
+class ToggleComponent {
+    + Toggle() : void
+    + TurnOn() : void
+    + TurnOff() : void
+}
+MonoBehaviour <|-- ToggleComponent
+ToggleComponent --> "target" Behaviour
+@enduml

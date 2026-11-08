@@ -1,0 +1,18 @@
+@startuml
+class SkyboxPad {
+    + sunIntensity : float = 1f
+    + Apply() : void
+}
+MonoBehaviour <|-- SkyboxPad
+SkyboxPad --> "skybox" Material
+SkyboxPad --> "sun" Light
+SkyboxPad o-> "sunRotation" Vector3
+SkyboxPad o-> "sunColour" Color
+SkyboxPad o-> "ambientSky" Color
+SkyboxPad o-> "ambientEquator" Color
+SkyboxPad o-> "ambientGround" Color
+SkyboxPad o-> "fogColour" Color
+SkyboxPad --> "padRenderer" Renderer
+SkyboxPad o-> "idleGlow" Color
+SkyboxPad o-> "activeGlow" Color
+@enduml

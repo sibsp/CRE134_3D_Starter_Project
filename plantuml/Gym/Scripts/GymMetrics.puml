@@ -1,0 +1,17 @@
+@startuml
+class GymMetrics {
+    + walkSpeed : float = 4f
+    + sprintSpeed : float = 6f
+    + jumpHeight : float = 1.2f
+    + gravity : float
+    + stepOffset : float = 0.25f
+    + slopeLimit : float = 45f
+    + height : float = 2f
+    + width : float = 1f
+    + eyeHeight : float = 1.375f
+    + GetAirTime() : float
+    + GetJumpDistanceWalking() : float
+    + GetJumpDistanceSprinting() : float
+    + {static} ReadFromPlayer() : GymMetrics
+}
+@enduml

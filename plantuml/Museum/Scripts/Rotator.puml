@@ -1,0 +1,7 @@
+@startuml
+class Rotator {
+}
+MonoBehaviour <|-- Rotator
+Rotator o-> "degreesPerSecond" Vector3
+Rotator o-> "space" Space
+@enduml

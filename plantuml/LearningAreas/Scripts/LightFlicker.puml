@@ -1,0 +1,8 @@
+@startuml
+class LightFlicker {
+    + minIntensity : float = 1.5f
+    + maxIntensity : float = 3f
+    + speed : float = 10f
+}
+MonoBehaviour <|-- LightFlicker
+@enduml

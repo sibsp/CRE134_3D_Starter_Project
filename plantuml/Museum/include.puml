@@ -1,0 +1,85 @@
+@startuml
+class Collectible {
+    + spinSpeed : float = 90f
+    + bobHeight : float = 0.15f
+    + bobSpeed : float = 2f
+}
+MonoBehaviour <|-- Collectible
+Collectible --> "collectEffect" ParticleSystem
+class FogZone {
+    + densityAtStart : float = 0.01f
+    + densityAtEnd : float = 0.2f
+    + UseLinear() : void
+    + UseExponential() : void
+    + UseExponentialSquared() : void
+}
+MonoBehaviour <|-- FogZone
+FogZone o-> "fogColour" Color
+FogZone o-> "mode" FogMode
+class GemGate {
+    + gemsNeeded : int = 3
+}
+MonoBehaviour <|-- GemGate
+GemGate o-> "onUnlocked" UnityEvent
+class InteractPrompt {
+    + promptText : string = "Press E to interact"
+}
+MonoBehaviour <|-- InteractPrompt
+InteractPrompt o-> "key" Key
+InteractPrompt o-> "onInteract" UnityEvent
+class LightSwitch {
+    + startOn : bool = false
+    + Toggle() : void
+    + SetOn(on:bool) : void
+}
+MonoBehaviour <|-- LightSwitch
+LightSwitch --> "onMaterial" Material
+LightSwitch --> "offMaterial" Material
+class MuseumUI {
+    + titleShowTime : float = 3f
+    + totalWings : int = 8
+    + visitedLabel : string = "Wings visited"
+    + fadeSpeed : float = 4f
+    + ShowTitle(title:string) : void
+    + ShowInfo(text:string) : void
+    + HideInfo() : void
+    + ShowPrompt(text:string) : void
+    + HidePrompt() : void
+    + VisitWing(wingName:string) : void
+    + AddGem() : void
+    + GetGemCount() : int
+}
+class "UnityEvent`1"<T> {
+}
+MonoBehaviour <|-- MuseumUI
+MuseumUI --> "Instance" MuseumUI
+MuseumUI --> "titleGroup" CanvasGroup
+MuseumUI --> "titleText" TMP_Text
+MuseumUI --> "infoGroup" CanvasGroup
+MuseumUI --> "infoText" TMP_Text
+MuseumUI --> "promptGroup" CanvasGroup
+MuseumUI --> "promptText" TMP_Text
+MuseumUI --> "wingsText" TMP_Text
+MuseumUI --> "gemsText" TMP_Text
+MuseumUI o-> "onGemsChanged<int>" "UnityEvent`1"
+class Patrol {
+    + speed : float = 1.5f
+    + turnSpeed : float = 180f
+    + waitAtPoint : float = 2f
+    + isEnemy : bool = false
+    + alertRadius : float = 5f
+}
+MonoBehaviour <|-- Patrol
+class Rotator {
+}
+MonoBehaviour <|-- Rotator
+Rotator o-> "degreesPerSecond" Vector3
+Rotator o-> "space" Space
+class TriggerZone {
+    + playerTag : string = "Player"
+    + onlyOnce : bool = false
+}
+MonoBehaviour <|-- TriggerZone
+TriggerZone o-> "onPlayerEnter" UnityEvent
+TriggerZone o-> "onPlayerExit" UnityEvent
+@enduml

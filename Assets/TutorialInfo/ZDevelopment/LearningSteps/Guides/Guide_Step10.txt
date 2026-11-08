@@ -1,0 +1,331 @@
+=PAGE Skyboxes
+=SUB The biggest object in every scene: Procedural and Panoramic skies, and why the sun, ambient light and fog must match them.
+
+The sky fills more of the screen than anything else, so it sets the mood of the whole scene. In Step 10, turn around at the start: there are five <b>sky pads</b> behind you. Step on one and the sky changes, and so do the sun, the ambient light and the fog, because a new sky only looks right if the lighting agrees with it.
+
+=IMG step10_pads|The five sky pads behind the player start. Each sign says which kind of skybox it uses.
+
+• <b>You will learn:</b> what a skybox is; the four skybox shader types; Procedural sky settings; 360° Panoramic images; matching sun, ambient light and fog to a sky; where to find free HDRI skies; switching skies from code.
+
+=PAGE The big idea
+A <b>skybox</b> is a picture painted on the inside of an enormous sphere (or cube) that surrounds the whole world. It's drawn behind everything else and never gets closer, however far you walk, just like the real sky.
+
+In Unity, a skybox is simply a <b>material</b> that uses a special skybox shader. Changing the sky means changing which material is plugged into <b>Window › Rendering › Lighting › Environment › Skybox Material</b>.
+
+But the sky isn't just a backdrop. If the sky shows night but the sun is still bright and orange, it looks fake. So every time the sky changes, three other things should change with it:
+
+• <b>The sun (Directional Light)</b>: direction, colour and brightness should match the sun or moon in the sky.
+
+• <b>Ambient light</b>: shadows should be tinted by the sky: blue at midday, grey on an overcast day, deep blue at night.
+
+• <b>Fog colour</b>: should match the sky near the horizon, so the distance blends into the sky (see Step 04).
+
+=BOX #F2B65C|Real-world link
+Photographers know that the same street looks completely different at noon, under clouds, and under a full moon, not because the street changed but because the sky did. Film crews even replace skies in post-production, and then re-grade the whole shot so the light matches. That's exactly what each sky pad does.
+=END
+
+=PAGE Key words
+<b><color=#F2B65C>Skybox</color></b>: The material drawn behind everything as the sky, set in the Lighting window.
+
+<b><color=#F2B65C>Procedural sky</color></b>: A sky calculated by maths, not an image. You adjust sliders (tint, thickness, sun size). Sun disc follows the Sun Source light.
+
+<b><color=#F2B65C>Panoramic sky</color></b>: A single 360° image (equirectangular, twice as wide as it is tall) wrapped around the world.
+
+<b><color=#F2B65C>6 Sided sky</color></b>: Six separate square images: front, back, left, right, up, down.
+
+<b><color=#F2B65C>Cubemap sky</color></b>: The same six faces stored as one Cubemap texture asset.
+
+<b><color=#F2B65C>Equirectangular</color></b>: A world-map style projection: left to right is 360° around, bottom to top is straight down to straight up.
+
+<b><color=#F2B65C>HDRI</color></b>: A high dynamic range image: a photo storing very bright values (like the real sun), ideal for skies that also light the scene.
+
+<b><color=#F2B65C>Exposure</color></b>: Overall brightness of the sky material.
+
+<b><color=#F2B65C>Rotation</color></b>: Spins a Panoramic or Cubemap sky around the vertical axis.
+
+=PAGE How Unity does it
+=H3 The four skybox shaders
+
+<b>Skybox/Procedural</b><br><indent=4%><color=#9fe3ff>Needs:</color> Nothing, just sliders<br><color=#9fe3ff>Good for:</color> Clear daytime skies, sunsets, quick tests<br><color=#9fe3ff>Used here:</color> Golden Hour, Clear Midday, Overcast</indent>
+
+<b>Skybox/Panoramic</b><br><indent=4%><color=#9fe3ff>Needs:</color> One 360° image<br><color=#9fe3ff>Good for:</color> Photos, HDRIs, painted or stylised skies<br><color=#9fe3ff>Used here:</color> Moonlit Night, Aurora</indent>
+
+<b>Skybox/6 Sided</b><br><indent=4%><color=#9fe3ff>Needs:</color> Six square images<br><color=#9fe3ff>Good for:</color> Older asset packs, hand-painted cube faces<br><color=#9fe3ff>Used here:</color> –</indent>
+
+<b>Skybox/Cubemap</b><br><indent=4%><color=#9fe3ff>Needs:</color> One Cubemap texture<br><color=#9fe3ff>Good for:</color> The same as 6 Sided, but as one asset<br><color=#9fe3ff>Used here:</color> –</indent>
+
+=H3 Procedural sky settings
+
+<b>Sun</b>: None, Simple or High Quality sun disc.
+
+<b>Sun Size / Convergence</b>: How big the sun disc is and how soft its glow.
+
+<b>Atmosphere Thickness</b>: Low = deep blue, thin air (like high mountains). High = thick, hazy, reddish.
+
+<b>Sky Tint</b>: Colours the upper sky.
+
+<b>Ground</b>: Colour of the “ground” half of the sky sphere, below the horizon.
+
+<b>Exposure</b>: Overall brightness.
+
+=BOX #7FC6E0|Good to know
+The procedural sun disc is drawn in the direction of the Lighting window's <b>Sun Source</b> light. Rotate the Directional Light and the sun in the sky moves with it. With a Panoramic sky the sun or moon is <i>painted in the image</i>, so you must rotate the light to line up with it yourself.
+=END
+
+=PAGE What's in this scene
+The sky materials are in <b>Assets/LearningSteps/Skyboxes</b>. The pads are in <b>LAYER 10 - Skyboxes</b>, each with a trigger collider and the <b>SkyboxPad</b> script.
+
+<b>1 Golden Hour</b><br><indent=4%><color=#9fe3ff>Sky material (type):</color> LG_Sky_GoldenHour (Procedural, a copy of LG_Sky)<br><color=#9fe3ff>Sun rotation / colour / intensity:</color> (24, 325, 0) warm #FFD19E, 1.6<br><color=#9fe3ff>Fog colour:</color> Warm sand</indent>
+
+<b>2 Clear Midday</b><br><indent=4%><color=#9fe3ff>Sky material (type):</color> LG_Sky_Midday (Procedural: thickness 1.0, exposure 1.3)<br><color=#9fe3ff>Sun rotation / colour / intensity:</color> (70, 325, 0) near-white, 1.4<br><color=#9fe3ff>Fog colour:</color> Pale blue</indent>
+
+<b>3 Overcast</b><br><indent=4%><color=#9fe3ff>Sky material (type):</color> LG_Sky_Overcast (Procedural: no sun disc, thickness 1.8, exposure 0.6)<br><color=#9fe3ff>Sun rotation / colour / intensity:</color> (55, 325, 0) grey-blue, 0.5<br><color=#9fe3ff>Fog colour:</color> Grey</indent>
+
+<b>4 Moonlit Night</b><br><indent=4%><color=#9fe3ff>Sky material (type):</color> LG_Sky_Night (Panoramic: LG_Sky_Starfield.png)<br><color=#9fe3ff>Sun rotation / colour / intensity:</color> (35, 200, 0) blue moonlight, 0.25<br><color=#9fe3ff>Fog colour:</color> Deep navy</indent>
+
+<b>5 Aurora</b><br><indent=4%><color=#9fe3ff>Sky material (type):</color> LG_Sky_AuroraNight (Panoramic: LG_Sky_Aurora.png)<br><color=#9fe3ff>Sun rotation / colour / intensity:</color> (30, 160, 0) green-tinted, 0.3<br><color=#9fe3ff>Fog colour:</color> Dark teal</indent>
+
+=IMG step10_midday|Pad 2: Clear Midday (Procedural).
+
+=IMG step10_overcast|Pad 3: Overcast (Procedural, no sun disc).
+
+=IMG step10_night|Pad 4: Moonlit Night (Panoramic). The moonlight comes from the painted moon's direction.
+
+=IMG step10_aurora|Pad 5: Aurora (Panoramic). The lantern lights now matter much more.
+
+=BOX #7BC48A|Tip
+The two panoramic images are 4096 × 2048 pixels (2:1, the equirectangular shape). They were generated for this project with stars, a Milky Way band, a moon and aurora curtains. Open them in the Project window to see what a 360° image looks like flat: the top and bottom edges are stretched because they wrap to a single point overhead and underfoot.
+=END
+
+=PAGE Build it yourself
+<color=#F2B65C><b>1.</b></color> In the Project window go to <b>Assets/LearningSteps/Skyboxes</b>, select <b>LG_Sky_Midday</b> and press Ctrl + D. Rename the copy <b>My_Sky</b>.
+
+<color=#F2B65C><b>2.</b></color> Open Window › Rendering › Lighting › Environment and drag My_Sky into <b>Skybox Material</b>.
+
+<color=#F2B65C><b>3.</b></color> Select My_Sky and play with <b>Atmosphere Thickness</b> (try 0.3 and 3), <b>Sky Tint</b> and <b>Exposure</b>.
+
+<color=#F2B65C><b>4.</b></color> Rotate the sun to X = 4 for a sunset. Now change the fog colour to match the glow near the horizon (use the colour picker's eyedropper on the Game view).
+
+<color=#F2B65C><b>5.</b></color> Try a Panoramic sky: download a free HDRI from <b>Poly Haven</b> (polyhaven.com, all CC0) as a 2K .hdr or .exr. Drag it into the Project. Select it and set <b>Texture Shape</b> to 2D (or Cube) and Apply.
+
+<color=#F2B65C><b>6.</b></color> Create a material, set its Shader to <b>Skybox › Panoramic</b> and drag the HDRI into its Spherical slot. Use it as the Skybox Material.
+
+<color=#F2B65C><b>7.</b></color> Use the material's <b>Rotation</b> slider to line the sun in the photo up with your Directional Light.
+
+<color=#F2B65C><b>8.</b></color> Try <b>Environment Lighting › Source: Skybox</b> and click <b>Generate Lighting</b> at the bottom of the Lighting window. Now the ambient light is taken from the sky image itself.
+
+=BOX #E58A7A|Watch out
+Pads change things while you're playing, so the changes vanish when you stop (that's what we want here). To change the scene's <i>default</i> sky, use the Lighting window in Edit mode.
+=END
+
+=PAGE The code: SkyboxPad.cs
+This script (in <i>Assets/LearningSteps/Scripts</i>) is on each pad. When the player steps on it, it applies a full “time of day”: sky, sun, ambient light and fog.
+
+=CODE SkyboxPad.cs (the comment block at the top of the file is not shown)
+[RequireComponent(typeof(Collider))]
+public class SkyboxPad : MonoBehaviour
+{
+    // ---------- Settings you can change in the Inspector ----------
+
+    [Header("Sky")]
+    [Tooltip("Any material that uses a Skybox shader (Procedural, Panoramic, 6 Sided or Cubemap).")]
+    public Material skybox;
+
+    [Header("Sun (Directional Light)")]
+    public Light sun;
+    public Vector3 sunRotation = new Vector3(50f, 325f, 0f);
+    public Color sunColour = Color.white;
+
+    [Range(0f, 3f)]
+    public float sunIntensity = 1f;
+
+    [Header("Ambient Light (Trilight)")]
+    public Color ambientSky = Color.grey;
+    public Color ambientEquator = Color.grey;
+    public Color ambientGround = Color.black;
+
+    [Header("Fog")]
+    [Tooltip("Fog looks best when it matches the colour of the sky at the horizon.")]
+    public Color fogColour = Color.grey;
+
+    [Header("Pad Highlight")]
+    public Renderer padRenderer;
+    public Color idleGlow = new Color(0.15f, 0.15f, 0.15f);
+    public Color activeGlow = new Color(1.6f, 1.3f, 0.7f);
+
+    // ---------- Private variables ----------
+
+    // Which pad is lit up at the moment.
+    // "static" means there is only ONE of this variable, shared by every
+    // SkyboxPad in the scene. So when a new pad lights up, it can find the
+    // old one and dim it.
+    private static SkyboxPad activePad;
+
+
+    // Reset() runs when you first add this script. It ticks "Is Trigger" for you.
+    private void Reset()
+    {
+        Collider myCollider = GetComponent<Collider>();
+        myCollider.isTrigger = true;
+    }
+
+
+    private void Start()
+    {
+        SetGlow(false);
+
+        // If this pad's sky is the one the scene starts with, light it up.
+        if (RenderSettings.skybox == skybox)
+        {
+            activePad = this;
+            SetGlow(true);
+        }
+    }
+
+
+    // The player stepped on the pad.
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            Apply();
+        }
+    }
+
+
+    // Change the sky, sun, ambient light and fog to this pad's settings.
+    public void Apply()
+    {
+        // 1. The sky.
+        // RenderSettings holds the values from Window > Rendering > Lighting.
+        // This is the "Skybox Material" slot.
+        RenderSettings.skybox = skybox;
+
+        // 2. The sun.
+        if (sun != null)
+        {
+            // Quaternion.Euler turns the X, Y, Z angles (like in the Inspector)
+            // into a rotation.
+            sun.transform.rotation = Quaternion.Euler(sunRotation);
+            sun.color = sunColour;
+            sun.intensity = sunIntensity;
+        }
+
+        // 3. The ambient light: Gradient mode, which code calls "Trilight".
+        RenderSettings.ambientMode = AmbientMode.Trilight;
+        RenderSettings.ambientSkyColor = ambientSky;
+        RenderSettings.ambientEquatorColor = ambientEquator;
+        RenderSettings.ambientGroundColor = ambientGround;
+
+        // 4. The fog.
+        RenderSettings.fogColor = fogColour;
+
+        // Ask Unity to refresh lighting that comes from the sky (such as reflections).
+        DynamicGI.UpdateEnvironment();
+
+        // Dim the pad that was lit before, and light up this one.
+        if (activePad != null && activePad != this)
+        {
+            activePad.SetGlow(false);
+        }
+
+        activePad = this;
+        SetGlow(true);
+    }
+
+
+    // Make the pad glow brightly (true) or dimly (false).
+    private void SetGlow(bool on)
+    {
+        if (padRenderer == null)
+        {
+            return;
+        }
+
+        // .material gives this pad its OWN copy of the material, so changing
+        // the glow here doesn't change the other pads (see Step 02).
+        Material padMaterial = padRenderer.material;
+
+        if (on == true)
+        {
+            padMaterial.SetColor("_EmissionColor", activeGlow);
+        }
+        else
+        {
+            padMaterial.SetColor("_EmissionColor", idleGlow);
+        }
+    }
+}
+=END
+
+<b>6–30</b>: All the settings for one “time of day”, grouped with <b>[Header]</b>s so the Inspector is easy to read.
+
+<b>38</b>: <b>static</b>: one shared variable for <i>all</i> pads, remembering which pad is currently lit.
+
+<b>42–46</b>: <b>Reset</b> ticks Is Trigger for you when you first add the script.
+
+<b>49–59</b>: When Play starts, dim the pad, then light it up if its sky is the one the scene starts with.
+
+<b>63–69</b>: When the player steps in, apply this pad's settings.
+
+<b>78</b>: <b>RenderSettings.skybox</b> is the Skybox Material slot from the Lighting window, set from code.
+
+<b>81–88</b>: Move and recolour the sun. <b>Quaternion.Euler</b> turns the X/Y/Z angles you see in the Inspector into a rotation.
+
+<b>91–97</b>: Set ambient light to Gradient/Trilight with three colours, and set the fog colour. (<b>AmbientMode</b> needs the line <b>using UnityEngine.Rendering;</b> at the top of the file.)
+
+<b>100</b>: Asks Unity to refresh lighting that comes from the environment (such as reflections) for the new sky.
+
+<b>103–109</b>: Turn off the previous pad's glow and light up this one.
+
+<b>123–132</b>: <b>.material</b> gives this pad its own copy of the material (as in Step 02), so only this pad's glow changes.
+
+=BOX #7FC6E0|Good to know
+Line 78 onwards only uses things you've met before: RenderSettings (Step 04), Light settings (Step 03), OnTriggerEnter and tags (Step 09), and emission (Step 02). Step 10 brings the whole series together.
+=END
+
+=PAGE Try this
+<color=#9fe3ff><b>1.</b></color> Open LG_Sky_Midday and change Sky Tint and Atmosphere Thickness. Step on pad 2 in Play mode to see your version.
+
+<color=#9fe3ff><b>2.</b></color> Rotate LG_Sky_AuroraNight with its <b>Rotation</b> slider so the aurora sits behind the tower.
+
+<color=#9fe3ff><b>3.</b></color> Window › Rendering › Lighting: drag a different sky into Skybox Material. What else now looks wrong, and why?
+
+<color=#9fe3ff><b>4.</b></color> <b>Stretch:</b> make a sixth pad, “Stormy Dusk”: duplicate a pad, make a new Procedural sky (thick, dark, purple tint), and set the pad's sun, ambient and fog to match. Then add the VFX_Rain prefab.
+
+=PAGE Common problems
+<b>The sky is pink.</b><br><indent=4%>The material isn't using a Skybox shader. Set its Shader to Skybox › Procedural or Panoramic.</indent>
+
+<b>Panoramic sky looks squashed or has a seam.</b><br><indent=4%>The image must be 2:1. Set Wrap Mode U to Repeat, and turn off mipmaps if a line appears at the seam.</indent>
+
+<b>Panoramic sky is blurry.</b><br><indent=4%>Raise the texture's Max Size (to 4096) and use a higher-resolution image.</indent>
+
+<b>Sky changed but the scene still looks like daytime.</b><br><indent=4%>Change the sun, ambient and fog too. That's the whole point of the pads.</indent>
+
+<b>Stepping on a pad does nothing.</b><br><indent=4%>The pad's collider isn't a trigger, or the player isn't tagged Player.</indent>
+
+<b>Two suns: one in the sky and one in the shadows.</b><br><indent=4%>The light's rotation doesn't match the sun painted in the panoramic image. Rotate the light or the sky.</indent>
+
+=PAGE Check your understanding
+<color=#9fe3ff><b>Q1</b></color>  What is a skybox in Unity, technically?
+
+<color=#9fe3ff><b>Q2</b></color>  Procedural vs Panoramic: what's the difference?
+
+<color=#9fe3ff><b>Q3</b></color>  Why does each pad also change the sun, ambient light and fog?
+
+<color=#9fe3ff><b>Q4</b></color>  Why doesn't a Panoramic sky's sun move when you rotate the Directional Light?
+
+<color=#9fe3ff><b>Q5</b></color>  What shape must a Panoramic (equirectangular) image be?
+
+<i>Answers are on the next page. Have a go first!</i>
+
+=PAGE Answers
+<color=#9fe3ff><b>A1</b></color>  A material using a skybox shader, set as the Skybox Material in the Lighting window.
+
+<color=#9fe3ff><b>A2</b></color>  Procedural is calculated from sliders; Panoramic wraps a 360° image around the world.
+
+<color=#9fe3ff><b>A3</b></color>  A sky only looks right if the lighting matches it; otherwise the scene looks fake.
+
+<color=#9fe3ff><b>A4</b></color>  The sun is painted into the image; you must line the light up with it yourself.
+
+<color=#9fe3ff><b>A5</b></color>  Twice as wide as it is tall (2:1).

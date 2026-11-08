@@ -1,0 +1,212 @@
+=PAGE Materials
+=SUB What is each surface made of? Colour, smoothness, metallic and emission with URP Lit.
+
+In Step 01 everything was grey. Now every surface has a <b>material</b>: grass is green and rough, water is blue and glassy, lantern glass glows. Lighting is still flat and neutral, so you can judge the materials on their own.
+
+=IMG step01_hero|Step 01: greybox.
+
+=IMG step02_hero|Step 02: the same view with materials.
+
+• <b>You will learn:</b> what materials, shaders and textures are; the four settings that matter most (Base Map, Smoothness, Metallic, Emission); how to make and apply a material; how to change one from code.
+
+=PAGE The big idea
+A 3D model is only a shape: a hollow skin of triangles with no colour. A <b>material</b> tells the computer how light should behave when it hits that skin. Is it rough like bark, so light scatters everywhere? Smooth like water, so it reflects the sky? Metal, so the reflection takes on its colour? Does it give off its own light?
+
+When you look at a real object you instantly know what it's made of from these clues. Good materials let players do the same in a game, and they help the level <i>read</i>: the light-brown path stands out against the green grass, so you know where to walk.
+
+=BOX #F2B65C|Real-world link
+Hold a wooden spoon and a metal spoon under a lamp. Same shape, but the wood shows a soft, blurry highlight and the metal shows a sharp, bright reflection of the lamp. That difference is <b>smoothness</b> and <b>metallic</b>.
+=END
+
+=PAGE Key words
+<b><color=#F2B65C>Material</color></b>: An asset (.mat) that stores the settings for how a surface looks. You drag it onto objects.
+
+<b><color=#F2B65C>Shader</color></b>: The small program on the graphics card that turns those settings into pixels. A material always uses one shader.
+
+<b><color=#F2B65C>URP Lit</color></b>: Unity's standard realistic shader for the Universal Render Pipeline. Every Lantern Grove material uses it.
+
+<b><color=#F2B65C>Base Map / Albedo</color></b>: The surface's basic colour, either a flat colour or a texture image.
+
+<b><color=#F2B65C>Texture</color></b>: An image (e.g. .png) wrapped onto a model to add detail such as wood grain or bricks.
+
+<b><color=#F2B65C>Smoothness</color></b>: 0 = rough and matte (chalk, grass); 1 = mirror-smooth (wet stone, glass, still water).
+
+<b><color=#F2B65C>Metallic</color></b>: 0 = non-metal (wood, stone, plastic); 1 = bare metal. Most things are 0 or 1, rarely in between.
+
+<b><color=#F2B65C>Emission</color></b>: Makes a surface look like it gives off light. It glows even in darkness, but on its own it does not light other objects.
+
+<b><color=#F2B65C>HDR colour</color></b>: A colour that can be brighter than white. Needed for emission strong enough to bloom (Step 04).
+
+=PAGE How Unity does it
+Select any material in the Project window (Lantern Grove's are in <b>Assets/Materials/LanternGrove</b>) and the Inspector shows the URP Lit settings. The ones you'll use most:
+
+<b>Surface Type</b><br><indent=4%><color=#9fe3ff>What it does:</color> Opaque (solid) or Transparent (see-through).<br><color=#9fe3ff>Try:</color> Keep Opaque unless you need glass or ghosts.</indent>
+
+<b>Base Map</b><br><indent=4%><color=#9fe3ff>What it does:</color> Colour swatch and an optional texture slot.<br><color=#9fe3ff>Try:</color> Click the swatch to pick a colour.</indent>
+
+<b>Metallic</b><br><indent=4%><color=#9fe3ff>What it does:</color> Slider 0–1: how metal-like the surface is.<br><color=#9fe3ff>Try:</color> 0 for almost everything in a forest.</indent>
+
+<b>Smoothness</b><br><indent=4%><color=#9fe3ff>What it does:</color> Slider 0–1: how sharp and bright reflections are.<br><color=#9fe3ff>Try:</color> 0.05 grass, 0.5 polished wood, 0.9 water.</indent>
+
+<b>Normal Map</b><br><indent=4%><color=#9fe3ff>What it does:</color> A special texture that fakes small bumps and grooves.<br><color=#9fe3ff>Try:</color> Adds detail without extra triangles.</indent>
+
+<b>Emission</b><br><indent=4%><color=#9fe3ff>What it does:</color> Tick the box, then pick an HDR colour and intensity.<br><color=#9fe3ff>Try:</color> Lantern glass, windows, crystals.</indent>
+
+=BOX #7FC6E0|Good to know
+To apply a material, drag it from the Project window onto the object in the Scene view or onto its name in the Hierarchy. Every object using the same material changes together when you edit it. That's a feature: fix the grass material once and every grass patch updates.
+=END
+
+=PAGE What's in this scene
+These are the real values used in the Lantern Grove materials. Notice how few settings each one needs.
+
+<b>LG_Grass</b><br><indent=4%><color=#9fe3ff>Colour:</color> #5C8C3D green<br><color=#9fe3ff>Smoothness:</color> 0.05<br><color=#9fe3ff>Metallic:</color> 0<br><color=#9fe3ff>Emission:</color> –<br><color=#9fe3ff>Why:</color> Grass is very rough and matte.</indent>
+
+<b>LG_PathDirt</b><br><indent=4%><color=#9fe3ff>Colour:</color> #9E7347 brown<br><color=#9fe3ff>Smoothness:</color> 0.05<br><color=#9fe3ff>Metallic:</color> 0<br><color=#9fe3ff>Emission:</color> –<br><color=#9fe3ff>Why:</color> Lighter than grass so the route stands out.</indent>
+
+<b>LG_Stone</b><br><indent=4%><color=#9fe3ff>Colour:</color> #9E998F grey<br><color=#9fe3ff>Smoothness:</color> 0.1<br><color=#9fe3ff>Metallic:</color> 0<br><color=#9fe3ff>Emission:</color> –<br><color=#9fe3ff>Why:</color> Dry stone: slightly smoother than soil.</indent>
+
+<b>LG_StoneDark</b><br><indent=4%><color=#9fe3ff>Colour:</color> #66635E<br><color=#9fe3ff>Smoothness:</color> 0.1<br><color=#9fe3ff>Metallic:</color> 0<br><color=#9fe3ff>Emission:</color> –<br><color=#9fe3ff>Why:</color> Contrast for edges and bases.</indent>
+
+<b>LG_Wood</b><br><indent=4%><color=#9fe3ff>Colour:</color> #855733<br><color=#9fe3ff>Smoothness:</color> 0.1<br><color=#9fe3ff>Metallic:</color> 0<br><color=#9fe3ff>Emission:</color> –<br><color=#9fe3ff>Why:</color> Weathered outdoor wood.</indent>
+
+<b>LG_WoodDark</b><br><indent=4%><color=#9fe3ff>Colour:</color> #523621<br><color=#9fe3ff>Smoothness:</color> 0.1<br><color=#9fe3ff>Metallic:</color> 0<br><color=#9fe3ff>Emission:</color> –<br><color=#9fe3ff>Why:</color> Posts and frames.</indent>
+
+<b>LG_RoofSlate</b><br><indent=4%><color=#9fe3ff>Colour:</color> #4C4554<br><color=#9fe3ff>Smoothness:</color> 0.2<br><color=#9fe3ff>Metallic:</color> 0<br><color=#9fe3ff>Emission:</color> –<br><color=#9fe3ff>Why:</color> Slate is a little shinier than stone.</indent>
+
+<b>LG_Metal</b><br><indent=4%><color=#9fe3ff>Colour:</color> #2E2E33<br><color=#9fe3ff>Smoothness:</color> 0.4<br><color=#9fe3ff>Metallic:</color> 0<br><color=#9fe3ff>Emission:</color> –<br><color=#9fe3ff>Why:</color> Dark painted iron (painted, so not fully metallic).</indent>
+
+<b>LG_Water</b><br><indent=4%><color=#9fe3ff>Colour:</color> #387899 blue<br><color=#9fe3ff>Smoothness:</color> <b>0.92</b><br><color=#9fe3ff>Metallic:</color> 0<br><color=#9fe3ff>Emission:</color> –<br><color=#9fe3ff>Why:</color> Very smooth, so it mirrors the sky.</indent>
+
+<b>LG_LanternGlow</b><br><indent=4%><color=#9fe3ff>Colour:</color> #FFC773<br><color=#9fe3ff>Smoothness:</color> 0.5<br><color=#9fe3ff>Metallic:</color> 0<br><color=#9fe3ff>Emission:</color> <b>Yes</b>, warm HDR<br><color=#9fe3ff>Why:</color> Glows like a lit lantern.</indent>
+
+<b>LG_Gem</b><br><indent=4%><color=#9fe3ff>Colour:</color> #66E6FF cyan<br><color=#9fe3ff>Smoothness:</color> 0.9<br><color=#9fe3ff>Metallic:</color> 0<br><color=#9fe3ff>Emission:</color> –<br><color=#9fe3ff>Why:</color> Polished crystal (used in Step 09).</indent>
+
+=IMG step02_pond|LG_Water: smoothness 0.92 reflects the sky.
+
+=IMG step02_fairyring|The fairy ring: imported Quaternius models keep their own flat-colour materials.
+
+The trees, plants, animals and furniture come from the Kenney and Quaternius packs. They arrive with simple flat-colour materials named things like <i>Green</i>, <i>Leaves</i>, <i>Wood</i> and <i>Rock</i>. That's why the scene has 47 materials in total even though only around a dozen were made by hand.
+
+=PAGE Build it yourself
+<color=#F2B65C><b>1.</b></color> In the Project window, open your own folder (make one called <b>MyMaterials</b>). Right-click › Create › <b>Material</b>. Name it <b>M_Mossy_Stone</b>.
+
+<color=#F2B65C><b>2.</b></color> Check the Shader at the top of the Inspector says <b>Universal Render Pipeline/Lit</b>.
+
+<color=#F2B65C><b>3.</b></color> Click the <b>Base Map</b> colour swatch and choose a grey-green. Set <b>Smoothness</b> to about 0.15.
+
+<color=#F2B65C><b>4.</b></color> Drag it onto a rock in your scene. Compare it with LG_Stone.
+
+<color=#F2B65C><b>5.</b></color> Make <b>M_Puddle</b>: dark blue-grey, Smoothness 0.95. Put it on a flattened cylinder on the path. Fly around it and watch the reflection change. (You'll see it best after Step 03 adds a proper sky.)
+
+<color=#F2B65C><b>6.</b></color> Make <b>M_Crystal</b>: tick <b>Emission</b>, click the Emission colour, pick a bright purple and raise <b>Intensity</b> to 2. Put it on a small object.
+
+<color=#F2B65C><b>7.</b></color> Try a texture: drag any image (a .png or .jpg you've made or downloaded) into the Project window, then drag it into the little square next to Base Map. If the pattern looks stretched, change <b>Tiling</b> (under Base Map) to 4, 4.
+
+=BOX #E58A7A|Watch out
+Editing a material that came with an asset pack changes it everywhere that pack is used, in every scene. To experiment safely, select the material and press <b>Ctrl + D</b> to duplicate it first, then edit the copy.
+=END
+
+=PAGE The code
+Materials can be changed while the game runs. This script makes an object pulse its glow, which is great for pickups or magic stones.
+
+=CODE GlowPulse.cs
+using UnityEngine;
+
+// GLOW PULSE: makes an object's glow (emission) pulse brighter and dimmer.
+public class GlowPulse : MonoBehaviour
+{
+    // ---------- Settings you can change in the Inspector ----------
+
+    // [ColorUsage(true, true)] shows an HDR colour picker,
+    // so the colour can be brighter than white.
+    [ColorUsage(true, true)]
+    public Color glowColour = Color.cyan;
+
+    // How fast it pulses.
+    public float speed = 2f;
+
+    // ---------- Private variables ----------
+
+    // This object's own copy of its material.
+    private Material myMaterial;
+
+
+    private void Start()
+    {
+        Renderer myRenderer = GetComponent<Renderer>();
+        myMaterial = myRenderer.material;
+
+        // Switch on the material's glow (like ticking the Emission box).
+        myMaterial.EnableKeyword("_EMISSION");
+    }
+
+
+    private void Update()
+    {
+        // Mathf.Sin swings between -1 and 1 as time goes on.
+        float wave = Mathf.Sin(Time.time * speed);
+
+        // Add 1 and halve it, so it swings between 0 and 1 instead.
+        float pulse = (wave + 1f) / 2f;
+
+        // Change the glow colour: brightest when pulse is 1, off when it is 0.
+        myMaterial.SetColor("_EmissionColor", glowColour * pulse * 3f);
+    }
+}
+=END
+
+<b>10</b>: An <b>attribute</b> that tells the Inspector to show an HDR colour picker, so the colour can be brighter than white.
+
+<b>19</b>: A <b>private</b> variable to remember this object's material. Only this script can use it.
+
+<b>24–25</b>: <b>.material</b> gives this object its <i>own copy</i> of the material, so only this object pulses. <b>.sharedMaterial</b> would change every object that uses it.
+
+<b>28</b>: Turns on the emission part of the shader (the same as ticking the Emission box).
+
+<b>35–38</b>: <b>Mathf.Sin</b> swings between −1 and 1 over time. Adding 1 and halving turns that into 0 to 1.
+
+<b>41</b>: <b>SetColor</b> changes a shader property by its internal name. <b>_EmissionColor</b> is the URP Lit name for the glow colour; <b>_BaseColor</b> is the main colour.
+
+=BOX #7BC48A|Tip
+Want to find a property's internal name? Select the material, click the three dots at the top right of the Inspector and choose <b>Select Shader</b>. The shader's Inspector lists every property with its name.
+=END
+
+=PAGE Try this
+<color=#9fe3ff><b>1.</b></color> Set LG_Water's Smoothness to 0.2. What happens to the reflections? Put it back to 0.92 when you're done.
+
+<color=#9fe3ff><b>2.</b></color> Make LG_PathDirt brighter. Does the route read better from the start clearing? Is there a point where it's too bright?
+
+<color=#9fe3ff><b>3.</b></color> Find all the emissive materials. Hint: they're the things that glow even in the dark. Use the search bar in the Project window with <b>t:Material</b> and look for the Emission box.
+
+<color=#9fe3ff><b>4.</b></color> <b>Stretch:</b> set LG_Metal's Metallic to 1. Why does it go darker rather than shinier with flat lighting? (Think about what there is to reflect.)
+
+=PAGE Common problems
+<b>Object turned bright pink.</b><br><indent=4%>The material's shader doesn't work in URP. Set its Shader to <i>Universal Render Pipeline/Lit</i>, or use Window › Rendering › Render Pipeline Converter for old materials.</indent>
+
+<b>Emission doesn't glow much.</b><br><indent=4%>Raise the Intensity in the HDR colour picker. Bloom (Step 04) makes strong emission look like it glows.</indent>
+
+<b>Emissive object doesn't light the ground around it.</b><br><indent=4%>That's correct. Emission makes a surface <i>look</i> lit; to light other things you need a real Light (Step 03).</indent>
+
+<b>Changed one tree and all trees changed.</b><br><indent=4%>They share a material. Duplicate the material (Ctrl + D) and give the copy to one tree.</indent>
+
+<b>Texture looks stretched or blurry.</b><br><indent=4%>Adjust Tiling under Base Map, or check the texture's import settings (Max Size).</indent>
+
+=PAGE Check your understanding
+<color=#9fe3ff><b>Q1</b></color>  What's the difference between a material and a shader?
+
+<color=#9fe3ff><b>Q2</b></color>  Why is LG_Water's smoothness 0.92 but LG_Grass only 0.05?
+
+<color=#9fe3ff><b>Q3</b></color>  Does an emissive lantern light up the path next to it?
+
+<color=#9fe3ff><b>Q4</b></color>  In code, what's the difference between .material and .sharedMaterial?
+
+<i>Answers are on the next page. Have a go first!</i>
+
+=PAGE Answers
+<color=#9fe3ff><b>A1</b></color>  The shader is the program that draws the surface; the material is a saved set of settings (colour, smoothness…) for one shader.
+
+<color=#9fe3ff><b>A2</b></color>  Still water is very smooth and reflects the sky; grass is rough and scatters light, so it looks matte.
+
+<color=#9fe3ff><b>A3</b></color>  No. Emission only makes the surface itself look bright. Step 03 adds Point Lights to actually light the surroundings.
+
+<color=#9fe3ff><b>A4</b></color>  .material makes a unique copy for that one object; .sharedMaterial edits the asset used by every object.

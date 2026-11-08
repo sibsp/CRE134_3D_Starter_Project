@@ -1,0 +1,9 @@
+@startuml
+class LightningFlash {
+    + flashIntensity : float = 4f
+    + minWait : float = 5f
+    + maxWait : float = 12f
+}
+MonoBehaviour <|-- LightningFlash
+LightningFlash --> "thunder" AudioSource
+@enduml

@@ -1,0 +1,7 @@
+@startuml
+class GymTeleporter {
+    + Teleport(index:int) : void
+}
+MonoBehaviour <|-- GymTeleporter
+GymTeleporter --> "Instance" GymTeleporter
+@enduml

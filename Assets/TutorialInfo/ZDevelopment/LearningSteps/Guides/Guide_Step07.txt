@@ -1,0 +1,361 @@
+=PAGE Animation
+=SUB Bring the grove to life: Animation Clips, Animator Controllers, state machines and a Patrol script for the deer and the wolf.
+
+Until now nothing in Lantern Grove moved on its own. Step 07 adds two kinds of animation. Simple <b>keyframe</b> animations make the 11 lanterns swing and the flag on the tower wave. <b>Character</b> animations make the deer, fox, stag and wolf idle, graze, walk and attack, controlled by a <b>state machine</b> and a short <b>Patrol</b> script.
+
+=IMG step07_deer|The deer by the pond walks a loop of 3 waypoints.
+
+=IMG step07_wolf|The wolf patrols 4 waypoints, and attacks if you get within 7 m.
+
+• <b>You will learn:</b> keyframes and Animation Clips; the Animation window; Animator Controllers, states, parameters and transitions; how code drives an Animator; moving characters between waypoints.
+
+=PAGE The big idea
+Animation is just <b>values changing over time</b>. A swinging lantern is a rotation that goes 0°, 6°, 0°, −6°, 0° and repeats. You don't set every frame. You set a few <b>keyframes</b> (“at 0.6 seconds, be at 6°”) and Unity fills in the in-between smoothly.
+
+Characters need more. A deer might be idle, eating, walking or attacking, and needs to switch between those at the right moments. That's what an <b>Animator Controller</b> does. It's a flowchart (a <b>state machine</b>) where each box is an animation and each arrow is a rule for when to switch. Your code doesn't play animations directly: it flips switches called <b>parameters</b>, and the state machine reacts.
+
+=BOX #F2B65C|Real-world link
+Traditional animators draw the key poses (keyframes) and assistants draw the frames in between (“tweening”). Unity is your in-betweener. A state machine is like a traffic light: it's always in exactly one state and follows fixed rules to move to the next.
+=END
+
+=PAGE Key words
+<b><color=#F2B65C>Keyframe</color></b>: A saved value at a moment in time, e.g. rotation X = 6 at 0.6 s.
+
+<b><color=#F2B65C>Animation Clip</color></b>: An asset (.anim) holding keyframes for one action: Lantern_Swing, Walk, Idle…
+
+<b><color=#F2B65C>Loop Time</color></b>: A clip setting that makes it repeat seamlessly.
+
+<b><color=#F2B65C>Animator (component)</color></b>: Plays animations on a GameObject using an Animator Controller.
+
+<b><color=#F2B65C>Animator Controller</color></b>: An asset (.controller) containing the state machine: states, transitions, parameters.
+
+<b><color=#F2B65C>State</color></b>: One box in the state machine, usually playing one clip.
+
+<b><color=#F2B65C>Transition</color></b>: An arrow between states, with conditions for when to take it.
+
+<b><color=#F2B65C>Parameter</color></b>: A variable the controller watches (Bool, Float, Int or Trigger). Code sets it.
+
+<b><color=#F2B65C>Has Exit Time</color></b>: If ticked, a transition waits until the current clip finishes (or reaches a set point) before switching.
+
+<b><color=#F2B65C>Any State</color></b>: A special state: a transition from it can fire whatever state you're currently in.
+
+<b><color=#F2B65C>Waypoint</color></b>: An empty GameObject marking a point on a route.
+
+=PAGE How Unity does it
+=H3 Making a keyframe animation
+
+<color=#F2B65C><b>1.</b></color> Select the object to animate and open <b>Window › Animation › Animation</b>.
+
+<color=#F2B65C><b>2.</b></color> Click <b>Create</b>, and save the new clip. Unity also adds an Animator component and an Animator Controller for you.
+
+<color=#F2B65C><b>3.</b></color> Press the red <b>record</b> button. Move the playhead to a time, then change the object (rotate, move, recolour). A keyframe appears.
+
+<color=#F2B65C><b>4.</b></color> Move to another time, change it again. Repeat. Press record again to stop.
+
+<color=#F2B65C><b>5.</b></color> Press the play button in the Animation window to preview.
+
+=H3 Making a state machine
+
+<color=#F2B65C><b>1.</b></color> Double-click an Animator Controller to open the <b>Animator</b> window.
+
+<color=#F2B65C><b>2.</b></color> Drag clips from the Project window into the grid to make states. The orange one is the default (where it starts).
+
+<color=#F2B65C><b>3.</b></color> In the <b>Parameters</b> tab click + and add, for example, a Bool called <b>Walking</b>.
+
+<color=#F2B65C><b>4.</b></color> Right-click a state › <b>Make Transition</b> and click the target state. Select the arrow and add a Condition: Walking = true.
+
+<color=#F2B65C><b>5.</b></color> Make the return arrow with Walking = false. Untick <b>Has Exit Time</b> on both so they respond instantly.
+
+=PAGE What's in this scene
+=H3 Keyframe animations (Assets/LearningSteps/Animation)
+
+<b>Lantern_Swing</b><br><indent=4%><color=#9fe3ff>Length:</color> 2.4 s, looping<br><color=#9fe3ff>Keyframes:</color> Rotation X: 0 s = 0°, 0.6 s = 6°, 1.8 s = −6°, 2.4 s = 0°<br><color=#9fe3ff>Used by:</color> 11 <b>Swing Pivot</b> objects (AC_LanternSwing)</indent>
+
+<b>Pennant_Wave</b><br><indent=4%><color=#9fe3ff>Length:</color> 1.6 s, looping<br><color=#9fe3ff>Keyframes:</color> Rotation Y: 0 s = 0°, 0.4 s = 18°, 1.2 s = −18°, 1.6 s = 0°<br><color=#9fe3ff>Used by:</color> The flag on the tower (AC_PennantWave)</indent>
+
+=BOX #7BC48A|Tip
+The lanterns swing from a <b>Swing Pivot</b>: an empty parent placed at the hook, with the lantern as its child. Rotating the pivot swings the lantern like a pendulum. Rotating the lantern itself would spin it around its middle. Pivots are one of the most useful tricks in animation.
+=END
+
+=H3 Animal state machines
+
+The animals come from the Quaternius Animals pack, which includes clips such as <i>Idle</i>, <i>Eating</i>, <i>Walk</i> and <i>Attack</i>. Each species has its own controller (AC_Deer, AC_Fox, AC_Stag, AC_Wolf) with the same design:
+
+<b>Idle</b><br><indent=4%><color=#9fe3ff>To:</color> Walk<br><color=#9fe3ff>Condition:</color> Walking = true<br><color=#9fe3ff>Exit time?:</color> No (instant)</indent>
+
+<b>Idle</b><br><indent=4%><color=#9fe3ff>To:</color> Eating<br><color=#9fe3ff>Condition:</color> (none: after Idle finishes)<br><color=#9fe3ff>Exit time?:</color> Yes</indent>
+
+<b>Eating</b><br><indent=4%><color=#9fe3ff>To:</color> Walk<br><color=#9fe3ff>Condition:</color> Walking = true<br><color=#9fe3ff>Exit time?:</color> No</indent>
+
+<b>Eating</b><br><indent=4%><color=#9fe3ff>To:</color> Idle<br><color=#9fe3ff>Condition:</color> (none: after Eating finishes)<br><color=#9fe3ff>Exit time?:</color> Yes</indent>
+
+<b>Walk</b><br><indent=4%><color=#9fe3ff>To:</color> Idle (Stag: Eating)<br><color=#9fe3ff>Condition:</color> Walking = false<br><color=#9fe3ff>Exit time?:</color> No</indent>
+
+<b>Any State</b><br><indent=4%><color=#9fe3ff>To:</color> Attack<br><color=#9fe3ff>Condition:</color> Attacking = true<br><color=#9fe3ff>Exit time?:</color> No</indent>
+
+<b>Attack</b><br><indent=4%><color=#9fe3ff>To:</color> Idle<br><color=#9fe3ff>Condition:</color> Attacking = false<br><color=#9fe3ff>Exit time?:</color> Yes</indent>
+
+So when standing still, an animal drifts naturally between Idle and Eating. When code sets <b>Walking</b> it switches to Walk immediately. <b>Attacking</b> can interrupt anything via Any State.
+
+=H3 The Patrol script (LAYER 07 - Animation)
+
+<b>Deer (mover)</b><br><indent=4%><color=#9fe3ff>Speed:</color> 0.9 m/s<br><color=#9fe3ff>Wait at point:</color> 5 s<br><color=#9fe3ff>Enemy?:</color> No<br><color=#9fe3ff>Waypoints:</color> 3 (Deer Waypoints)</indent>
+
+<b>Wolf (mover)</b><br><indent=4%><color=#9fe3ff>Speed:</color> 1.6 m/s<br><color=#9fe3ff>Wait at point:</color> 1.5 s<br><color=#9fe3ff>Enemy?:</color> Yes, alert radius 7 m<br><color=#9fe3ff>Waypoints:</color> 4 (Wolf Waypoints)</indent>
+
+=PAGE The code: Patrol.cs
+This script (in <i>Assets/Museum/Scripts</i>) moves an animal between waypoints and tells its Animator what it's doing.
+
+=CODE Patrol.cs (the comment block at the top of the file is not shown)
+public class Patrol : MonoBehaviour
+{
+    // ---------- Settings you can change in the Inspector ----------
+
+    // The points to walk between, in order.
+    public Transform[] waypoints;
+
+    // Walking speed in metres per second.
+    public float speed = 1.5f;
+
+    // How fast it turns, in degrees per second.
+    public float turnSpeed = 180f;
+
+    // How long to wait at each waypoint, in seconds.
+    public float waitAtPoint = 2f;
+
+    [Header("Enemy behaviour")]
+    // Tick this to make the animal attack the player.
+    public bool isEnemy = false;
+
+    // How close (in metres) the player must be before an enemy attacks.
+    public float alertRadius = 5f;
+
+    // ---------- Private variables ----------
+
+    // The Animator on the animal model (a child of this object).
+    private Animator animator;
+
+    // The player, so an enemy knows where to look.
+    private Transform player;
+
+    // Which waypoint we are walking towards (0 = the first one).
+    private int waypointIndex = 0;
+
+    // Counts down while waiting at a waypoint.
+    private float waitTimer = 0f;
+
+
+    private void Start()
+    {
+        // The Animator is on the model, which is a CHILD of this object,
+        // so we use GetComponentInChildren.
+        animator = GetComponentInChildren<Animator>();
+
+        // Find the object tagged "Player".
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        if (playerObject != null)
+        {
+            player = playerObject.transform;
+        }
+    }
+
+
+    // Update runs every frame and decides what the animal does next.
+    private void Update()
+    {
+        // 1. Enemies attack if the player is close enough.
+        if (isEnemy == true && player != null)
+        {
+            float distanceToPlayer = Vector3.Distance(Flatten(player.position), Flatten(transform.position));
+
+            if (distanceToPlayer < alertRadius)
+            {
+                TurnTowards(player.position);
+                SetAnimation(false, true);
+                return;   // stop here: skip the rest of Update this frame
+            }
+        }
+
+        // 2. No waypoints? Just stand still.
+        if (waypoints == null || waypoints.Length == 0)
+        {
+            SetAnimation(false, false);
+            return;
+        }
+
+        // 3. Waiting at a waypoint? Count down and stand still.
+        if (waitTimer > 0f)
+        {
+            waitTimer = waitTimer - Time.deltaTime;
+            SetAnimation(false, false);
+            return;
+        }
+
+        // 4. Walk towards the current waypoint.
+        Vector3 target = waypoints[waypointIndex].position;
+
+        // Keep our own height, so the animal doesn't tilt up or down.
+        target.y = transform.position.y;
+
+        TurnTowards(target);
+
+        // MoveTowards steps towards the target, but never further than
+        // speed x time, so we never overshoot it.
+        float stepThisFrame = speed * Time.deltaTime;
+        transform.position = Vector3.MoveTowards(transform.position, target, stepThisFrame);
+
+        SetAnimation(true, false);
+
+        // 5. Close enough to the waypoint? Head for the next one and wait.
+        float distanceToTarget = Vector3.Distance(transform.position, target);
+        if (distanceToTarget < 0.1f)
+        {
+            waypointIndex = waypointIndex + 1;
+
+            // After the last waypoint, go back to the first one.
+            if (waypointIndex >= waypoints.Length)
+            {
+                waypointIndex = 0;
+            }
+
+            waitTimer = waitAtPoint;
+        }
+    }
+
+
+    // Turn smoothly to face a point, a few degrees each frame.
+    private void TurnTowards(Vector3 point)
+    {
+        Vector3 direction = Flatten(point) - Flatten(transform.position);
+
+        // If the point is right on top of us there is no direction to face.
+        if (direction.magnitude < 0.01f)
+        {
+            return;
+        }
+
+        // LookRotation makes a rotation that faces along "direction".
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+
+        // RotateTowards turns from our current rotation towards lookRotation,
+        // but only by turnSpeed degrees per second.
+        float degreesThisFrame = turnSpeed * Time.deltaTime;
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, degreesThisFrame);
+    }
+
+
+    // Tell the Animator what we are doing. This is the ONLY place this
+    // script touches animation: it sets two Bool parameters, and the
+    // Animator Controller decides which animation to play.
+    private void SetAnimation(bool walking, bool attacking)
+    {
+        if (animator == null)
+        {
+            return;
+        }
+
+        animator.SetBool("Walking", walking);
+        animator.SetBool("Attacking", attacking);
+    }
+
+
+    // Return the same position but with the height (y) set to 0,
+    // so that distances and directions ignore height.
+    private Vector3 Flatten(Vector3 position)
+    {
+        position.y = 0f;
+        return position;
+    }
+}
+=END
+
+<b>6–22</b>: Settings in the Inspector. <b>Transform[]</b> is a list of waypoint objects. <b>[Header]</b> adds a bold label.
+
+<b>27–36</b>: <b>Private</b> variables: the Animator, the player, which waypoint we're heading to, and a countdown timer.
+
+<b>43</b>: <b>GetComponentInChildren</b>: the Animator is on the animal model, a child of the “mover” object.
+
+<b>46–50</b>: Find the object tagged <b>Player</b> so enemies know where you are.
+
+<b>58–68</b>: If this is an enemy and the player is within alertRadius: turn to face them, switch to Attack, and <b>return</b> (skip the rest of Update this frame).
+
+<b>71–75</b>: No waypoints set up? Stand still.
+
+<b>78–83</b>: Waiting at a waypoint? Count down and stay idle.
+
+<b>86–89</b>: Where we're going. Ignore height so the animal doesn't tilt up or down.
+
+<b>95–96</b>: <b>MoveTowards</b> steps towards the target by at most speed × time, so it never overshoots.
+
+<b>98</b>: Tell the Animator we're walking. The state machine switches to the Walk state.
+
+<b>101–112</b>: Close enough? Go to the next waypoint; after the last one, go back to waypoint 0 so the route loops. Start waiting.
+
+<b>118–135</b>: Turn smoothly towards a point. <b>LookRotation</b> makes a rotation facing that direction; <b>RotateTowards</b> turns a limited number of degrees per frame.
+
+<b>141–150</b>: The <i>only</i> place the script touches animation: it sets the two Bool parameters. The controller does the rest.
+
+<b>155–159</b>: A helper that flattens a position onto the ground (y = 0) so distances ignore height.
+
+=BOX #7FC6E0|Good to know
+Separating <i>what the character is doing</i> (code sets Walking/Attacking) from <i>how it looks</i> (the Animator Controller) is a pattern used in almost every game. An animator can redesign the states without touching the code.
+=END
+
+=PAGE Build it yourself
+<color=#F2B65C><b>1.</b></color> Make a swinging sign: create an empty GameObject at the top of a post, name it <b>Sign Pivot</b>, and make a flat cube (your sign) its child, hanging below it.
+
+<color=#F2B65C><b>2.</b></color> Select Sign Pivot, open Window › Animation › Animation, click <b>Create</b> and save as <b>Sign_Swing.anim</b>.
+
+<color=#F2B65C><b>3.</b></color> Record keyframes on Rotation Z: 0 s = 0, 0.5 s = 8, 1.5 s = −8, 2 s = 0. Select the clip asset and check <b>Loop Time</b> is ticked.
+
+<color=#F2B65C><b>4.</b></color> Press Play. To vary it, select the Animator component and change its <b>Speed</b>, or start it at a different offset.
+
+<color=#F2B65C><b>5.</b></color> Make an animal patrol: create two or three empty GameObjects as waypoints, put a Quaternius animal inside an empty “mover” parent, add the <b>Patrol</b> component to the mover and drag the waypoints into its list.
+
+<color=#F2B65C><b>6.</b></color> Give the animal one of the AC_ controllers (Animator › Controller). Press Play and open the Animator window with the animal selected to watch the states light up.
+
+=PAGE Try this
+<color=#9fe3ff><b>1.</b></color> Press Play, select the deer and open the <b>Animator</b> window. Watch which state is active as it walks and stops.
+
+<color=#9fe3ff><b>2.</b></color> Change the Lantern_Swing speed on one lantern (Animator component › Speed). Why might identical lanterns swinging in sync look fake?
+
+<color=#9fe3ff><b>3.</b></color> Walk up to the wolf. What triggers the Attack state? Find the number in the Inspector that controls it.
+
+<color=#9fe3ff><b>4.</b></color> <b>Stretch:</b> tick <b>isEnemy</b> on the deer. What happens? Why might you want a “flee” behaviour instead?
+
+=PAGE Common problems
+<b>Animal slides along in its Idle pose.</b><br><indent=4%>The controller has no Walking parameter, the name is misspelt (case matters), or the transition is missing.</indent>
+
+<b>Animation waits before switching.</b><br><indent=4%>Untick <b>Has Exit Time</b> on that transition.</indent>
+
+<b>Lantern spins around its middle.</b><br><indent=4%>Animate a parent pivot placed at the hook, not the lantern itself.</indent>
+
+<b>Clip plays once then stops.</b><br><indent=4%>Select the clip asset and tick <b>Loop Time</b>.</indent>
+
+<b>Animal walks into the ground or floats.</b><br><indent=4%>Waypoints are at different heights; the script keeps the animal's own height, so place the mover on the ground.</indent>
+
+<b>Recording changed things I didn't want.</b><br><indent=4%>Everything you touch while the red record button is on becomes a keyframe. Delete unwanted keys in the Animation window.</indent>
+
+=PAGE Check your understanding
+<color=#9fe3ff><b>Q1</b></color>  What's a keyframe, and what does Unity do between keyframes?
+
+<color=#9fe3ff><b>Q2</b></color>  What's the difference between an Animation Clip and an Animator Controller?
+
+<color=#9fe3ff><b>Q3</b></color>  How does Patrol.cs make the deer play its Walk animation?
+
+<color=#9fe3ff><b>Q4</b></color>  Why does the Attack transition come from Any State?
+
+<color=#9fe3ff><b>Q5</b></color>  What does index = (index + 1) % waypoints.Length do?
+
+<i>Answers are on the next page. Have a go first!</i>
+
+=PAGE Answers
+<color=#9fe3ff><b>A1</b></color>  A saved value at a point in time; Unity smoothly interpolates (tweens) between them.
+
+<color=#9fe3ff><b>A2</b></color>  A clip is one animation; a controller is the state machine deciding which clip plays and when.
+
+<color=#9fe3ff><b>A3</b></color>  It sets the Animator's Bool parameter “Walking” to true; a transition then switches to the Walk state.
+
+<color=#9fe3ff><b>A4</b></color>  So the animal can attack from any state (idle, eating or walking) without separate arrows from each.
+
+<color=#9fe3ff><b>A5</b></color>  Moves to the next waypoint and wraps back to the first after the last, so the route loops.

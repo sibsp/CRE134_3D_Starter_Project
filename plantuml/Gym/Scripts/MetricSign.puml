@@ -1,0 +1,7 @@
+@startuml
+class MetricSign {
+    + template : string = "Jump height: {jump&#125; m"
+    + Refresh() : void
+}
+MonoBehaviour <|-- MetricSign
+@enduml

@@ -1,0 +1,9 @@
+@startuml
+class ToggleComponent {
+    + Toggle() : void
+    + TurnOn() : void
+    + TurnOff() : void
+}
+MonoBehaviour <|-- ToggleComponent
+ToggleComponent --> "target" Behaviour
+@enduml

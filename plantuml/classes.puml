@@ -1,0 +1,268 @@
+@startuml classes
+title 1st Year 3D classes
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+
+package Museum {
+class Collectible {
+    + spinSpeed : float = 90f
+    + bobHeight : float = 0.15f
+    + bobSpeed : float = 2f
+}
+MonoBehaviour <|-- Collectible
+Collectible --> "collectEffect" ParticleSystem
+class FogZone {
+    + densityAtStart : float = 0.01f
+    + densityAtEnd : float = 0.2f
+    + UseLinear() : void
+    + UseExponential() : void
+    + UseExponentialSquared() : void
+}
+MonoBehaviour <|-- FogZone
+FogZone o-> "fogColour" Color
+FogZone o-> "mode" FogMode
+class GemGate {
+    + gemsNeeded : int = 3
+}
+MonoBehaviour <|-- GemGate
+GemGate o-> "onUnlocked" UnityEvent
+class InteractPrompt {
+    + promptText : string = "Press E to interact"
+}
+MonoBehaviour <|-- InteractPrompt
+InteractPrompt o-> "key" Key
+InteractPrompt o-> "onInteract" UnityEvent
+class LightSwitch {
+    + startOn : bool = false
+    + Toggle() : void
+    + SetOn(on:bool) : void
+}
+MonoBehaviour <|-- LightSwitch
+LightSwitch --> "onMaterial" Material
+LightSwitch --> "offMaterial" Material
+class MuseumUI {
+    + titleShowTime : float = 3f
+    + totalWings : int = 8
+    + visitedLabel : string = "Wings visited"
+    + fadeSpeed : float = 4f
+    + ShowTitle(title:string) : void
+    + ShowInfo(text:string) : void
+    + HideInfo() : void
+    + ShowPrompt(text:string) : void
+    + HidePrompt() : void
+    + VisitWing(wingName:string) : void
+    + AddGem() : void
+    + GetGemCount() : int
+}
+class "UnityEvent`1"<T> {
+}
+MonoBehaviour <|-- MuseumUI
+MuseumUI --> "Instance" MuseumUI
+MuseumUI --> "titleGroup" CanvasGroup
+MuseumUI --> "titleText" TMP_Text
+MuseumUI --> "infoGroup" CanvasGroup
+MuseumUI --> "infoText" TMP_Text
+MuseumUI --> "promptGroup" CanvasGroup
+MuseumUI --> "promptText" TMP_Text
+MuseumUI --> "wingsText" TMP_Text
+MuseumUI --> "gemsText" TMP_Text
+MuseumUI o-> "onGemsChanged<int>" "UnityEvent`1"
+class Patrol {
+    + speed : float = 1.5f
+    + turnSpeed : float = 180f
+    + waitAtPoint : float = 2f
+    + isEnemy : bool = false
+    + alertRadius : float = 5f
+}
+MonoBehaviour <|-- Patrol
+class Rotator {
+}
+MonoBehaviour <|-- Rotator
+Rotator o-> "degreesPerSecond" Vector3
+Rotator o-> "space" Space
+class TriggerZone {
+    + playerTag : string = "Player"
+    + onlyOnce : bool = false
+}
+MonoBehaviour <|-- TriggerZone
+TriggerZone o-> "onPlayerEnter" UnityEvent
+TriggerZone o-> "onPlayerExit" UnityEvent
+}
+
+package Zoo {
+class ZooGenerator <<static>> {
+    + {static} Generate(folder:string, origin:Vector3) : GameObject
+    + {static} GroupName(modelName:string) : string
+    + {static} GetClips(path:string) : List<AnimationClip>
+    + {static} Bounds(target:GameObject) : Bounds
+    + {static} Label(parent:Transform, text:string, position:Vector3, size:float, width:float, alignment:TextAlignmentOptions) : TextMeshPro
+}
+class ZooClipPlayer {
+    + speed : float = 1f
+}
+MonoBehaviour <|-- ZooClipPlayer
+ZooClipPlayer --> "clip" AnimationClip
+class ZooLighting {
+    + Apply(index:int) : void
+}
+class Preset {
+    + name : string = "Day"
+    + sunIntensity : float = 1.3f
+    + lampsOn : bool = false
+}
+MonoBehaviour <|-- ZooLighting
+ZooLighting --> "sun" Light
+ZooLighting o-> "cycleKey" Key
+ZooLighting +-- Preset
+Preset o-> "sunAngles" Vector3
+Preset o-> "sunColour" Color
+Preset o-> "skyAmbient" Color
+Preset o-> "equatorAmbient" Color
+Preset o-> "groundAmbient" Color
+}
+
+package Gym {
+class GymMetrics {
+    + walkSpeed : float = 4f
+    + sprintSpeed : float = 6f
+    + jumpHeight : float = 1.2f
+    + gravity : float
+    + stepOffset : float = 0.25f
+    + slopeLimit : float = 45f
+    + height : float = 2f
+    + width : float = 1f
+    + eyeHeight : float = 1.375f
+    + GetAirTime() : float
+    + GetJumpDistanceWalking() : float
+    + GetJumpDistanceSprinting() : float
+    + {static} ReadFromPlayer() : GymMetrics
+}
+class GymTeleporter {
+    + Teleport(index:int) : void
+}
+MonoBehaviour <|-- GymTeleporter
+GymTeleporter --> "Instance" GymTeleporter
+class MetricSign {
+    + template : string = "Jump height: {jump&#125; m"
+    + Refresh() : void
+}
+MonoBehaviour <|-- MetricSign
+class TeleportPad {
+    + stationIndex : int = 0
+}
+MonoBehaviour <|-- TeleportPad
+}
+
+package LearningAreas {
+class AreaKit <<static>> {
+    + <<const>> SceneFolder : string = "Assets/Scenes/Learning Areas"
+    + <<const>> MatFolder : string = "Assets/LearningAreas/Materials"
+    + {static} NewScene(sceneName:string) : Scene
+    + {static} Save() : void
+    + {static} Group(groupName:string, parent:Transform) : Transform
+    + {static} Group(groupName:string) : Transform
+    + {static} Mat(materialName:string, colour:Color, smoothness:float) : Material
+    + {static} Mat(materialName:string, colour:Color, smoothness:float, metallic:float) : Material
+    + {static} GlowMat(materialName:string, colour:Color, smoothness:float, glowColour:Color) : Material
+    + {static} SeeThroughMat(materialName:string, colour:Color, smoothness:float) : Material
+    + {static} TexturedMat(materialName:string, colour:Color, smoothness:float, texture:Texture, tiling:Vector2) : Material
+    + {static} PatternTexture(textureName:string, colourA:Color, colourB:Color, pattern:string) : Texture2D
+    + {static} Shape(shapeType:string, objectName:string, parent:Transform, bottomCentre:Vector3, angles:Vector3, material:Material, settings:Dictionary<string, object>, addCollider:bool) : GameObject
+    + {static} Box(objectName:string, parent:Transform, centre:Vector3, size:Vector3, material:Material) : GameObject
+    + {static} Box(objectName:string, parent:Transform, centre:Vector3, size:Vector3, material:Material, yaw:float, addCollider:bool) : GameObject
+    + {static} Prim(primitiveType:PrimitiveType, objectName:string, parent:Transform, position:Vector3, scale:Vector3, material:Material, addCollider:bool, yaw:float) : GameObject
+    + {static} Room(roomName:string, centre:Vector3, size:Vector3, wall:Material, floor:Material, ceiling:Material, doorWidth:float, doorHeight:float, addCeiling:bool) : Transform
+    + {static} Model(assetPath:string, parent:Transform, position:Vector3, yaw:float, targetHeight:float) : GameObject
+    + {static} FindModel(fileName:string) : string
+    + {static} VFX(prefabName:string, parent:Transform, position:Vector3, scale:float) : GameObject
+    + {static} Bounds(target:GameObject) : Bounds
+    + {static} Sun(angles:Vector3, colour:Color, intensity:float, shadows:bool) : Light
+    + {static} Point(lightName:string, parent:Transform, position:Vector3, colour:Color, range:float, intensity:float, shadows:bool) : Light
+    + {static} Spot(lightName:string, parent:Transform, position:Vector3, lookAt:Vector3, colour:Color, range:float, angle:float, intensity:float, shadows:bool) : Light
+    + {static} Ambient(sky:Color, equator:Color, ground:Color, skybox:Material) : void
+    + {static} Text(parent:Transform, text:string, position:Vector3, yaw:float, size:float, colour:Color, width:float, height:float, alignment:TextAlignmentOptions) : TextMeshPro
+    + {static} Plaque(parent:Transform, text:string, position:Vector3, yaw:float) : void
+    + {static} NoticeBoard(position:Vector3, yaw:float, title:string, what:string, tasks:string[]) : void
+    + {static} AddPlayer(position:Vector3, yaw:float) : Transform
+    + {static} AddUI(title:string, showCounters:bool, visitedLabel:string, total:int) : MuseumUI
+    + {static} Zone(parent:Transform, zoneName:string, centre:Vector3, size:Vector3) : TriggerZone
+    + {static} InfoZone(ui:MuseumUI, title:string, info:string, centre:Vector3, size:Vector3, visitId:string) : TriggerZone
+}
+AreaKit --> "Root" Transform
+class FloatBob {
+    + height : float = 0.15f
+    + speed : float = 1f
+}
+MonoBehaviour <|-- FloatBob
+class LightFlicker {
+    + minIntensity : float = 1.5f
+    + maxIntensity : float = 3f
+    + speed : float = 10f
+}
+MonoBehaviour <|-- LightFlicker
+class LightningFlash {
+    + flashIntensity : float = 4f
+    + minWait : float = 5f
+    + maxWait : float = 12f
+}
+MonoBehaviour <|-- LightningFlash
+LightningFlash --> "thunder" AudioSource
+class PhysicsRelease {
+    + Release() : void
+    + ResetBodies() : void
+}
+MonoBehaviour <|-- PhysicsRelease
+class ToggleComponent {
+    + Toggle() : void
+    + TurnOn() : void
+    + TurnOff() : void
+}
+MonoBehaviour <|-- ToggleComponent
+ToggleComponent --> "target" Behaviour
+}
+
+package LearningSteps {
+class SkyboxPad {
+    + sunIntensity : float = 1f
+    + Apply() : void
+}
+MonoBehaviour <|-- SkyboxPad
+SkyboxPad --> "skybox" Material
+SkyboxPad --> "sun" Light
+SkyboxPad o-> "sunRotation" Vector3
+SkyboxPad o-> "sunColour" Color
+SkyboxPad o-> "ambientSky" Color
+SkyboxPad o-> "ambientEquator" Color
+SkyboxPad o-> "ambientGround" Color
+SkyboxPad o-> "fogColour" Color
+SkyboxPad --> "padRenderer" Renderer
+SkyboxPad o-> "idleGlow" Color
+SkyboxPad o-> "activeGlow" Color
+class StepGuideViewer {
+    + stepLabel : string = "STEP 01"
+    + showHint : bool = true
+    + SetOpen(open:bool) : void
+    + IsGuideOpen() : bool
+    + GetPageCount() : int
+    + PreviewPage(index:int) : void
+}
+class Block {
+    + kind : string = ""
+    + text : string = ""
+    + extra : string = ""
+}
+class Page {
+    + title : string = ""
+}
+class "List`1"<T> {
+}
+MonoBehaviour <|-- StepGuideViewer
+StepGuideViewer --> "guide" TextAsset
+StepGuideViewer o-> "openKey" Key
+StepGuideViewer +-- Block
+Block o-> "lines<string>" "List`1"
+StepGuideViewer +-- Page
+Page o-> "blocks<Block>" "List`1"
+}
+
+@enduml

@@ -1,0 +1,8 @@
+@startuml
+class InteractPrompt {
+    + promptText : string = "Press E to interact"
+}
+MonoBehaviour <|-- InteractPrompt
+InteractPrompt o-> "key" Key
+InteractPrompt o-> "onInteract" UnityEvent
+@enduml

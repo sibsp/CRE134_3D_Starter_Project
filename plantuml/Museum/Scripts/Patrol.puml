@@ -1,0 +1,10 @@
+@startuml
+class Patrol {
+    + speed : float = 1.5f
+    + turnSpeed : float = 180f
+    + waitAtPoint : float = 2f
+    + isEnemy : bool = false
+    + alertRadius : float = 5f
+}
+MonoBehaviour <|-- Patrol
+@enduml

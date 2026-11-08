@@ -1,0 +1,448 @@
+=PAGE Unity Basics
+=SUB Everything you need before Step 01: the Unity Editor, GameObjects and components, Play mode and a first look at C#.
+
+Lantern Grove is a small woodland world: a clearing with lanterns, a winding path, a stream with a footbridge, a pond, a fairy mushroom ring and an old watchtower. You will meet it ten times. Each <b>Learning Step</b> scene is the same world with <b>one new idea added</b>, so you can see exactly what each idea does.
+
+=IMG step10_hero|Lantern Grove as it looks by the final step. In Step 01 the same view is plain grey.
+
+=PAGE How these guides work
+Every guide follows the same pattern, so once you know one you know them all:
+
+• <b>The big idea</b> explains the concept in everyday language, before any Unity buttons.
+
+• <b>Key words</b> gives you the vocabulary. Lecturers, tutorials and the Unity manual all use these words.
+
+• <b>How Unity does it</b> shows which component, window or setting is involved.
+
+• <b>What's in this scene</b> lists the real objects and numbers used in Lantern Grove, so you can find them.
+
+• <b>Build it yourself</b> is a step-by-step walkthrough you can follow in your own scene.
+
+• <b>The code</b> (where there is some) is explained line by line. You do not need to have coded before.
+
+• <b>Try this</b>, <b>Common problems</b> and <b>Check your understanding</b> help you practise and test yourself.
+
+=BOX #7BC48A|Tip
+Open each step scene and walk around it in Play mode <i>before</i> reading the guide. Then read, then come back and poke at it. Each scene has a notice board near the start with three quick tasks.
+=END
+
+=PAGE The Unity Editor in five windows
+When you open the project you will see several panels. You can drag them around, but these five matter most:
+
+<b>Scene</b><br><indent=4%><color=#9fe3ff>What it shows:</color> The 3D world you are building, seen from a free-flying editor camera.<br><color=#9fe3ff>You use it to…:</color> Move, rotate and place objects.</indent>
+
+<b>Game</b><br><indent=4%><color=#9fe3ff>What it shows:</color> What the player's camera sees. This is what you get when you press Play.<br><color=#9fe3ff>You use it to…:</color> Test the game as a player.</indent>
+
+<b>Hierarchy</b><br><indent=4%><color=#9fe3ff>What it shows:</color> A list of every object in the open scene, nested like folders.<br><color=#9fe3ff>You use it to…:</color> Find and select objects; group them.</indent>
+
+<b>Inspector</b><br><indent=4%><color=#9fe3ff>What it shows:</color> All the settings (components) on the selected object.<br><color=#9fe3ff>You use it to…:</color> Change colours, sizes, scripts and more.</indent>
+
+<b>Project</b><br><indent=4%><color=#9fe3ff>What it shows:</color> Every file in your project: models, materials, sounds, scripts, scenes.<br><color=#9fe3ff>You use it to…:</color> Find assets and drag them into the scene.</indent>
+
+There is also the <b>Console</b> window (Window › General › Console). It shows messages and errors. If something isn't working, check the Console first. Red messages are errors that need fixing.
+
+=H3 Moving around the Scene view
+
+<b>Fly like a game camera</b>: Hold the <b>right mouse button</b>, then use <b>W A S D</b> (and Q / E for down / up). Hold Shift to go faster.
+
+<b>Orbit around a point</b>: Hold <b>Alt</b> and drag with the <b>left mouse button</b>.
+
+<b>Pan (slide sideways)</b>: Drag with the <b>middle mouse button</b>.
+
+<b>Zoom</b>: Scroll the mouse wheel.
+
+<b>Jump to an object</b>: Select it in the Hierarchy and press <b>F</b> (frame) with the mouse over the Scene view.
+
+=H3 Tool shortcuts
+
+<b>Q</b> hand (pan)  ·  <b>W</b> move  ·  <b>E</b> rotate  ·  <b>R</b> scale  ·  <b>T</b> rect. The coloured arrows that appear are called a <b>gizmo</b>: red is X, green is Y (up), blue is Z (forward).
+
+=PAGE GameObjects and components
+This is the single most important idea in Unity. <b>Everything in a scene is a GameObject</b>: a tree, a light, the camera, an invisible trigger, even an empty folder-like group. On its own a GameObject does nothing. It gets its abilities from <b>components</b> attached to it.
+
+=BOX #F2B65C|Real-world link
+Think of a GameObject as an empty Lego base plate and components as the bricks you clip on. Clip on a Mesh Renderer and it becomes visible. Clip on a Light and it glows. Clip on a Rigidbody and it falls. Clip on your own script and it does whatever you wrote.
+=END
+
+<b>Transform</b><br><indent=4%><color=#9fe3ff>What it adds:</color> Position, rotation and scale. <i>Every</i> GameObject has one.<br><color=#9fe3ff>You'll meet it in:</color> Every step</indent>
+
+<b>Mesh Filter + Mesh Renderer</b><br><indent=4%><color=#9fe3ff>What it adds:</color> A 3D shape, and the ability to draw it with a material.<br><color=#9fe3ff>You'll meet it in:</color> Step 01, 02</indent>
+
+<b>Light</b><br><indent=4%><color=#9fe3ff>What it adds:</color> Light that shines on other objects.<br><color=#9fe3ff>You'll meet it in:</color> Step 03</indent>
+
+<b>Volume</b><br><indent=4%><color=#9fe3ff>What it adds:</color> Post-processing effects such as Bloom and Vignette.<br><color=#9fe3ff>You'll meet it in:</color> Step 04</indent>
+
+<b>Collider / Rigidbody</b><br><indent=4%><color=#9fe3ff>What it adds:</color> A solid shape for collisions / real physics (gravity, mass).<br><color=#9fe3ff>You'll meet it in:</color> Step 05</indent>
+
+<b>Audio Source</b><br><indent=4%><color=#9fe3ff>What it adds:</color> Plays a sound in the world.<br><color=#9fe3ff>You'll meet it in:</color> Step 06</indent>
+
+<b>Animator</b><br><indent=4%><color=#9fe3ff>What it adds:</color> Plays and blends animations.<br><color=#9fe3ff>You'll meet it in:</color> Step 07</indent>
+
+<b>Particle System</b><br><indent=4%><color=#9fe3ff>What it adds:</color> Lots of tiny sprites: fireflies, smoke, leaves.<br><color=#9fe3ff>You'll meet it in:</color> Step 08</indent>
+
+<b>Canvas</b><br><indent=4%><color=#9fe3ff>What it adds:</color> On-screen UI: text, panels, counters.<br><color=#9fe3ff>You'll meet it in:</color> Step 09</indent>
+
+<b>Your scripts</b><br><indent=4%><color=#9fe3ff>What it adds:</color> Any behaviour you write in C#.<br><color=#9fe3ff>You'll meet it in:</color> Steps 07, 09, 10</indent>
+
+=H3 Transform: where things are
+
+Unity measures in <b>units</b>, and the convention is <b>1 unit = 1 metre</b>. The player is about 2 units tall. <b>Position</b> is X (left/right), Y (up/down) and Z (forward/back). <b>Rotation</b> is in degrees around each axis. <b>Scale</b> of 1 means normal size; 2 means twice as big.
+
+When you drag one object onto another in the Hierarchy, it becomes a <b>child</b>. A child moves, rotates and scales with its <b>parent</b>. Lantern Grove uses this a lot: <i>--- LANTERN GROVE ---</i> is a parent of <i>Environment</i>, <i>Path & Water</i>, <i>Landmark - Watchtower</i> and so on.
+
+=PAGE Play mode
+Press the <b>Play</b> button (or <b>Ctrl + P</b>) to run the scene. Press it again to stop. The player uses the Unity <b>Starter Assets First Person Controller</b>:
+
+<b>W A S D</b>: Walk
+
+<b>Mouse</b>: Look around
+
+<b>Space</b>: Jump
+
+<b>Left Shift</b>: Sprint
+
+<b>E</b>: Interact (from Step 09 onwards)
+
+<b>G</b>: Open or close the step guide for the scene you're in
+
+<b>Esc</b>: Release the mouse cursor so you can click the Editor again
+
+=BOX #E58A7A|Watch out
+<b>Changes made in Play mode are thrown away when you stop.</b> This catches out everyone. It is useful for experimenting (nothing is permanent) but if you find a setting you like, note the number down, stop Play mode, then type it in again. Many people set a Play mode tint (Edit › Preferences › Colors › Playmode tint) so it's obvious when they are playing.
+=END
+
+=PAGE Assets, materials and prefabs
+• An <b>asset</b> is any file in the Project window: a model (.fbx), a texture (.png), a sound (.wav), a material, a script, a scene.
+
+• A <b>scene</b> (.unity file) is one level or space. Each Learning Step is its own scene. <b>Save with Ctrl + S</b>, and save often.
+
+• A <b>prefab</b> is a saved, reusable GameObject. Change the prefab and every copy in every scene updates. The particle effects in Step 08 are prefabs from <i>Assets/Zoo/VFX</i>.
+
+• A <b>material</b> decides how a surface looks: colour, shininess, glow. Step 02 is all about them.
+
+=BOX #7BC48A|Tip
+Never rename or move files in Windows Explorer. Always do it inside Unity's Project window, otherwise Unity loses track of what is connected to what.
+=END
+
+=PAGE A first look at C#
+Unity scripts are written in a language called <b>C#</b> (“C sharp”). A script becomes a component you can add to a GameObject. You don't need to be a programmer to follow these guides. Every script is explained line by line. Here is the shape of almost every Unity script:
+
+=CODE Spinner.cs: a tiny script that spins any object
+using UnityEngine;
+
+// SPINNER: spins any object it is added to.
+public class Spinner : MonoBehaviour
+{
+    // ---------- Settings you can change in the Inspector ----------
+
+    // How fast to spin, in degrees per second.
+    public float speed = 90f;
+
+
+    // Start runs once, when Play begins.
+    private void Start()
+    {
+        Debug.Log("Hello from " + gameObject.name);
+    }
+
+
+    // Update runs every frame (about 60 times a second).
+    private void Update()
+    {
+        float degreesThisFrame = speed * Time.deltaTime;
+        transform.Rotate(0f, degreesThisFrame, 0f);
+    }
+}
+=END
+
+<b>1</b>: <b>using UnityEngine;</b> lets the script use Unity's built-in tools (Transform, Debug, Time…).
+
+<b>3</b>: A <b>comment</b>. Anything after <b>//</b> is a note for humans; Unity ignores it.
+
+<b>4</b>: Declares a <b>class</b> called Spinner. The file must be called <b>Spinner.cs</b>, exactly the same name. <b>: MonoBehaviour</b> means “this can be attached to a GameObject as a component”.
+
+<b>9</b>: A <b>public</b> variable. Unity shows it in the Inspector so you can change it without touching code. <b>float</b> means a number with decimals; the <b>f</b> after 90 marks it as a float.
+
+<b>13–16</b>: <b>Start()</b> runs once at the beginning. <b>Debug.Log</b> prints a message to the Console. <b>private</b> means only this script can use the method; Unity can still call it.
+
+<b>20–24</b>: <b>Update()</b> runs every frame. <b>Time.deltaTime</b> is the time since the last frame, so multiplying by it makes the spin the same speed on fast and slow computers (90 degrees per <i>second</i>, not per frame). Line 22 works the number out and stores it in a variable; line 23 uses it.
+
+=BOX #7FC6E0|Good to know
+<b>How every script in this project is laid out.</b> All the scripts you will meet follow the same simple pattern, so once you can read one you can read them all: a comment block at the top saying <i>what it does</i> and <i>how to use it</i>; a section of <b>public</b> settings you can change in the Inspector; a section of <b>private</b> variables only the script uses; then the methods, each with a comment above it. Everything is written out one step per line, with no shortcuts, so you can follow it from top to bottom.
+=END
+
+To try it: in the Project window right-click › Create › Scripting › MonoBehaviour Script (in older Unity versions: Create › C# Script), name it <b>Spinner</b>, double-click to open it, paste the code, save, then drag the script onto any object and press Play.
+
+=BOX #7FC6E0|Good to know
+C# is fussy. Capital letters matter (<b>Update</b> works, <b>update</b> silently does nothing), every statement ends with a semicolon <b>;</b> and every <b>{</b> needs a matching <b>}</b>. If the Console shows a red error after saving, double-click the error and it takes you to the line.
+=END
+
+=PAGE How the Learning Steps fit together
+<b>01 Greybox</b><br><indent=4%><color=#9fe3ff>Adds:</color> Layout only, all grey<br><color=#9fe3ff>Big question it answers:</color> Is the space fun and readable before it's pretty?</indent>
+
+<b>02 Materials</b><br><indent=4%><color=#9fe3ff>Adds:</color> Colour, shine, glow<br><color=#9fe3ff>Big question it answers:</color> What is each surface made of?</indent>
+
+<b>03 Lighting</b><br><indent=4%><color=#9fe3ff>Adds:</color> Sun, lanterns, ambient, sky<br><color=#9fe3ff>Big question it answers:</color> What time of day is it and where should I look?</indent>
+
+<b>04 Fog & Atmosphere</b><br><indent=4%><color=#9fe3ff>Adds:</color> Fog and post-processing<br><color=#9fe3ff>Big question it answers:</color> How far can I see, and what's the mood?</indent>
+
+<b>05 Colliders & Physics</b><br><indent=4%><color=#9fe3ff>Adds:</color> Solid objects, pushable crates<br><color=#9fe3ff>Big question it answers:</color> What can I bump into and move?</indent>
+
+<b>06 Audio</b><br><indent=4%><color=#9fe3ff>Adds:</color> 2D and 3D sound, echo<br><color=#9fe3ff>Big question it answers:</color> What does the world sound like?</indent>
+
+<b>07 Animation</b><br><indent=4%><color=#9fe3ff>Adds:</color> Animals, swinging lanterns<br><color=#9fe3ff>Big question it answers:</color> What is alive and moving?</indent>
+
+<b>08 Particles</b><br><indent=4%><color=#9fe3ff>Adds:</color> Fireflies, smoke, leaves<br><color=#9fe3ff>Big question it answers:</color> What small details make it feel magical?</indent>
+
+<b>09 UI & Triggers</b><br><indent=4%><color=#9fe3ff>Adds:</color> On-screen text, gems, Press E<br><color=#9fe3ff>Big question it answers:</color> How does the game talk to the player?</indent>
+
+<b>10 Skyboxes</b><br><indent=4%><color=#9fe3ff>Adds:</color> Five swappable skies<br><color=#9fe3ff>Big question it answers:</color> How does the sky set the whole scene?</indent>
+
+In the Hierarchy, each new feature lives under a group called <b>LAYER 0X - …</b>, for example <i>LAYER 06 - Audio</i>. Because every later step keeps the earlier layers, Step 10 contains everything.
+
+=PAGE Common problems
+<b>My changes disappeared.</b><br><indent=4%>You edited in Play mode. Stop, then make the change again in Edit mode.</indent>
+
+<b>Pink / magenta objects.</b><br><indent=4%>The material uses a shader that doesn't work with URP (the render pipeline this project uses). Use a <i>Universal Render Pipeline/Lit</i> material instead.</indent>
+
+<b>I can't click anything in the Editor while playing.</b><br><indent=4%>The game has captured the mouse. Press <b>Esc</b>.</indent>
+
+<b>I lost a window.</b><br><indent=4%>Window › Layouts › Default resets everything.</indent>
+
+<b>Script won't attach: “class cannot be found”.</b><br><indent=4%>The file name and the class name don't match, or there's a red error in the Console.</indent>
+
+=PAGE Check your understanding
+<color=#9fe3ff><b>Q1</b></color>  What is the difference between the Scene view and the Game view?
+
+<color=#9fe3ff><b>Q2</b></color>  A GameObject is visible but you want it to glow and fall. What do you add?
+
+<color=#9fe3ff><b>Q3</b></color>  You tweaked a light for ten minutes in Play mode, then pressed Stop. What happened?
+
+<color=#9fe3ff><b>Q4</b></color>  Why multiply by Time.deltaTime in Update()?
+
+<color=#9fe3ff><b>Q5</b></color>  Which component does every GameObject have?
+
+<i>Answers are on the next page. Have a go first!</i>
+
+=PAGE Answers
+<color=#9fe3ff><b>A1</b></color>  The Scene view is your editing camera that you can fly anywhere; the Game view shows what the player's camera sees in Play mode.
+
+<color=#9fe3ff><b>A2</b></color>  Components: change its material (emission) for the glow, and add a Collider plus a Rigidbody so it falls and lands.
+
+<color=#9fe3ff><b>A3</b></color>  The changes were thrown away. Changes made in Play mode are not saved.
+
+<color=#9fe3ff><b>A4</b></color>  So movement is per second rather than per frame, and runs at the same speed on fast and slow computers.
+
+<color=#9fe3ff><b>A5</b></color>  Transform (position, rotation, scale).
+=PAGE Greybox
+=SUB Plan the space before you make it pretty: layout, scale, route and landmarks.
+
+Everything in this scene is plain grey. That is on purpose. A <b>greybox</b> (also called a <b>blockout</b>) lets you judge whether a space works: is it the right size, can the player find their way, is there something interesting to walk towards? You answer those questions <i>before</i> spending hours on colours, lights and detail.
+
+=IMG step01_hero|Step 01 from above the start clearing. No colour, flat lighting, default sky: only shape and layout.
+
+• <b>You will learn:</b> what greyboxing is and why studios do it; how to read a layout; scale in Unity units; landmarks, sightlines and routes; how the Lantern Grove hierarchy is organised.
+
+=PAGE The big idea
+Imagine building a house. You would not choose wallpaper before checking the rooms are big enough and the doors are in sensible places. Level design works the same way. Game studios block out levels with simple grey shapes, play them, change them, and only then hand them to artists. Changing a grey cube takes seconds; changing a finished, textured, lit building takes days.
+
+Grey also removes distractions. Without colour or dramatic lighting, you notice the things that actually matter to a player: <b>where am I, where can I go, and what do I want to reach?</b>
+
+=BOX #F2B65C|Real-world link
+Architects make cardboard models. Theatre designers make a “white card” model of the stage. Film-makers do a rough storyboard. A greybox is the game version: cheap, fast, and easy to throw away.
+=END
+
+=PAGE Key words
+<b><color=#F2B65C>Greybox / blockout</color></b>: A rough version of a level made with simple untextured shapes, used to test layout and gameplay.
+
+<b><color=#F2B65C>Scale</color></b>: How big things are compared to the player. In Unity, 1 unit = 1 metre and the player is about 2 units tall.
+
+<b><color=#F2B65C>Landmark</color></b>: A big, distinctive object the player can see from far away and navigate by. Here: the watchtower.
+
+<b><color=#F2B65C>Sightline</color></b>: What the player can see from a given spot. Good sightlines show the goal and hint at the route.
+
+<b><color=#F2B65C>Route / critical path</color></b>: The main path through the level from start to goal.
+
+<b><color=#F2B65C>Point of interest</color></b>: A smaller place worth visiting off the main path, e.g. the pond or the fairy ring.
+
+<b><color=#F2B65C>Hierarchy</color></b>: The Unity window listing every object in the scene, grouped into parents and children.
+
+=PAGE How Unity does it
+There is no special “greybox mode” in Unity. A greybox is just ordinary GameObjects with plain grey materials. Lantern Grove uses three:
+
+<b>LG_Greybox_Light</b>: Ground-level and path surfaces, so the walkable route reads clearly.
+
+<b>LG_Greybox_Mid</b>: Most props, trees and rocks.
+
+<b>LG_Greybox_Dark</b>: Contrast details such as the tower roof and posts.
+
+The shapes themselves were made with <b>UModeler X</b>, a modelling tool that works inside Unity. The path, stream and pond are <b>parametric shapes</b> (the <i>UMXParametricShape</i> component), meaning you can change their width, curve and length with sliders instead of re-modelling them. Trees, rocks and animals come from the <b>Kenney</b> and <b>Quaternius</b> free asset packs in <i>Assets/3D Assets</i>, temporarily painted grey.
+
+Lighting is deliberately boring: one Directional Light, flat ambient light and Unity's default sky. You'll replace all of that in Step 03.
+
+=PAGE What's in this scene
+=IMG step01_aerial|Top-down view. The path runs from the start (bottom) through the gate, over the footbridge and up to the watchtower (top).
+
+<b>Start clearing</b><br><indent=4%><color=#9fe3ff>Where (X, Z):</color> (0, −6)<br><color=#9fe3ff>Role in the level:</color> Where the player spawns. The notice board is here.</indent>
+
+<b>Entrance gate</b><br><indent=4%><color=#9fe3ff>Where (X, Z):</color> (0, −1)<br><color=#9fe3ff>Role in the level:</color> A “threshold”: walking through it says <i>the adventure starts here</i>.</indent>
+
+<b>Footbridge over the stream</b><br><indent=4%><color=#9fe3ff>Where (X, Z):</color> (−1.5, 34)<br><color=#9fe3ff>Role in the level:</color> A crossing point that funnels the player onto the route.</indent>
+
+<b>Pond</b><br><indent=4%><color=#9fe3ff>Where (X, Z):</color> (13, 47)<br><color=#9fe3ff>Role in the level:</color> Point of interest to the east (right).</indent>
+
+<b>Fairy mushroom ring</b><br><indent=4%><color=#9fe3ff>Where (X, Z):</color> (−13, 54)<br><color=#9fe3ff>Role in the level:</color> Point of interest to the west (left).</indent>
+
+<b>Old watchtower</b><br><indent=4%><color=#9fe3ff>Where (X, Z):</color> (0, 90)<br><color=#9fe3ff>Role in the level:</color> The landmark and goal. About 19 m tall.</indent>
+
+The hierarchy is organised so you can find things quickly. Everything sits under one parent called <b>--- LANTERN GROVE ---</b>:
+
+<b>Environment</b>: The ground (a 160 × 160 m plane).
+
+<b>Path & Water</b>: The winding path, stream, stream bed, pond and pond edge.
+
+<b>Landmark - Watchtower</b>: The tower: walls, spiral staircase, roof, beacon.
+
+<b>UModeler Props</b>: Footbridge, entrance gate, signpost, path lanterns, fairy ring, rocks.
+
+<b>Nature Dressing</b>: Trees, bushes, grass, flowers, logs, pond life and animals (over 700 objects).
+
+<b>Lighting</b>: The sun (a Directional Light).
+
+<b>Player Start</b>: Marks where the player begins.
+
+<b>Step Notice Board</b>: The in-world sign with this step's tasks.
+
+=BOX #7BC48A|Tip
+Grouping by purpose matters more than it seems. When a scene has 1,000+ objects, a tidy hierarchy is the difference between finding something in two seconds and two minutes. Name things properly: “Footbridge”, not “Cube (37)”.
+=END
+
+=PAGE Reading the layout like a designer
+=IMG step01_startview|The player's first view. The tower is visible straight ahead, framed by the gate and the path.
+
+=H3 1. A landmark you can always see
+
+From the very first frame the player can see the watchtower at the end of the path. That single sightline answers “where am I going?” without any text or arrows. Because it is tall, it stays visible above the trees as you walk.
+
+=H3 2. A route that bends
+
+The path winds rather than running dead straight. Bends hide and reveal things, which makes walking more interesting, and the stream and bridge create a natural <i>choke point</i> that keeps the player on track.
+
+=H3 3. Rewards for exploring
+
+The pond and fairy ring sit off to either side of the main path. They are optional, which makes finding them feel like a discovery. In Step 09 you'll see gems hidden at exactly these places.
+
+=H3 4. Human scale
+
+Door frames, steps, fences and benches all have real-world sizes the player instinctively knows. If the gate were 10 m tall the player would feel tiny; at 4.2 m it feels like a proper but approachable entrance. Always check new props against the player capsule (about 2 m).
+
+=PAGE Build it yourself: a mini greybox
+<color=#F2B65C><b>1.</b></color> Create a new scene: File › New Scene › <i>Basic (URP)</i>. Save it straight away as <b>MyGreybox</b>.
+
+<color=#F2B65C><b>2.</b></color> Make a floor: GameObject › 3D Object › <b>Plane</b>. In the Inspector set its Scale to (5, 1, 5). A plane is 10 × 10 units, so this makes it 50 × 50 m.
+
+<color=#F2B65C><b>3.</b></color> Make a grey material: in the Project window right-click › Create › <b>Material</b>, name it <b>Greybox_Mid</b>, and set its Base Map colour to a mid grey. Drag it onto the plane. Make a lighter and darker one too.
+
+<color=#F2B65C><b>4.</b></color> Add a <b>Capsule</b> (GameObject › 3D Object › Capsule). It is 2 units tall, the same as a player. Use it as your “scale person” next to everything you build.
+
+<color=#F2B65C><b>5.</b></color> Block out a goal: a tall Cube scaled to (4, 15, 4) at the far end of the floor. That's your landmark.
+
+<color=#F2B65C><b>6.</b></color> Block out a route with flattened cubes (Scale Y = 0.1) using the light material, and add a few obstacles or a “bridge”.
+
+<color=#F2B65C><b>7.</b></color> Add a player: open any Learning Step scene, select <b>Player (First Person)</b> in the Hierarchy and press Ctrl + C. Go back to your scene, press Ctrl + V, and delete the <b>Main Camera</b> your new scene came with (the player brings its own). Press Play, walk your route and time it.
+
+<color=#F2B65C><b>8.</b></color> Group your objects under empty parents (GameObject › Create Empty) named <b>Route</b>, <b>Landmark</b> and <b>Obstacles</b>.
+
+=BOX #7FC6E0|Good to know
+Holding <b>V</b> while moving an object turns on vertex snapping, which makes lining shapes up much easier. Holding <b>Ctrl</b> while moving snaps to the grid.
+=END
+
+=PAGE Doing it with code (optional)
+You'll rarely build a greybox in code, but this short script shows that a GameObject is just data you can create and change. Add it to any empty object and press Play to drop a row of grey “trees” along the Z axis.
+
+=CODE GreyboxRow.cs
+using UnityEngine;
+
+// GREYBOX ROW: when Play starts, makes a row of grey "trees" (cylinders).
+public class GreyboxRow : MonoBehaviour
+{
+    // ---------- Settings you can change in the Inspector ----------
+
+    // Drag a grey material in here.
+    public Material greyMaterial;
+
+    // How many trees to make, and how far apart (in metres).
+    public int count = 10;
+    public float spacing = 4f;
+
+
+    private void Start()
+    {
+        // Repeat the code inside the { } "count" times.
+        // i counts 0, 1, 2 ... up to count - 1.
+        for (int i = 0; i < count; i++)
+        {
+            // Make a new cylinder and give it a name.
+            GameObject tree = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            tree.name = "Greybox Tree " + (i + 1);
+
+            // Move it along the Z axis, a bit further each time.
+            float z = i * spacing;
+            tree.transform.position = new Vector3(6f, 2f, z);
+            tree.transform.localScale = new Vector3(0.6f, 2f, 0.6f);
+
+            // Give it the grey material.
+            Renderer treeRenderer = tree.GetComponent<Renderer>();
+            treeRenderer.material = greyMaterial;
+        }
+    }
+}
+=END
+
+<b>9–13</b>: Public settings that appear in the Inspector: which material, how many, and how far apart.
+
+<b>20</b>: A <b>for loop</b>: repeat the code inside <b>count</b> times, with <b>i</b> going 0, 1, 2…
+
+<b>23</b>: <b>CreatePrimitive</b> makes a new GameObject with a built-in shape (here a cylinder).
+
+<b>27–28</b>: Work out how far along Z this tree goes, then use it in <b>new Vector3(x, y, z)</b>, which is a position.
+
+<b>29</b>: A cylinder is 2 units tall at scale 1, so Y scale 2 makes it 4 m tall.
+
+<b>32–33</b>: Get the object's Renderer component and give it our material.
+
+=PAGE Try this
+<color=#9fe3ff><b>1.</b></color> Walk the route from the start to the top of the tower and time it. Is it too long or too short? What would you change?
+
+<color=#9fe3ff><b>2.</b></color> Stand at the start. Can you see the tower? Now move one tall tree so it blocks the view. Why does that matter?
+
+<color=#9fe3ff><b>3.</b></color> Find one place where you're not sure which way to go. What simple grey shape could you add to guide the player?
+
+<color=#9fe3ff><b>4.</b></color> <b>Stretch:</b> sketch a top-down map of Lantern Grove on paper, marking the route, the landmark and two points of interest.
+
+=PAGE Common problems
+<b>Everything looks huge or tiny.</b><br><indent=4%>Compare against a 2 m capsule. Check you didn't scale a parent object by accident.</indent>
+
+<b>I fall through the floor in Play mode.</b><br><indent=4%>The floor needs a collider. Unity's Plane and Cube come with one; imported models may not (see Step 05).</indent>
+
+<b>Objects are hard to place on the ground.</b><br><indent=4%>Select the object and press <b>End</b> to drop it onto the surface below, or hold Ctrl+Shift while dragging.</indent>
+
+=PAGE Check your understanding
+<color=#9fe3ff><b>Q1</b></color>  Why do designers greybox before adding art?
+
+<color=#9fe3ff><b>Q2</b></color>  What is the landmark in Lantern Grove and why is it a good one?
+
+<color=#9fe3ff><b>Q3</b></color>  How tall is a default Unity Capsule, and why is it useful?
+
+<color=#9fe3ff><b>Q4</b></color>  Name the two points of interest off the main path.
+
+<i>Answers are on the next page. Have a go first!</i>
+
+=PAGE Answers
+<color=#9fe3ff><b>A1</b></color>  Layout is cheap to change in grey and expensive to change once it's finished, and grey removes distractions so you judge the space itself.
+
+<color=#9fe3ff><b>A2</b></color>  The watchtower: it is tall, unique and visible from the start, so it tells the player where to go.
+
+<color=#9fe3ff><b>A3</b></color>  2 units (2 m), roughly a person, so it's a handy scale reference.
+
+<color=#9fe3ff><b>A4</b></color>  The pond (east) and the fairy mushroom ring (west).

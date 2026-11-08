@@ -1,0 +1,214 @@
+=PAGE Particles
+=SUB The small details that make a place feel magical: fireflies, beacon smoke, falling leaves, sparkles and dust.
+
+Some things are too small, too many or too fuzzy to model: smoke, sparks, rain, dust, fireflies. Games draw them with <b>particle systems</b>, which spray out hundreds of tiny images that move, fade and die. Step 08 adds nine particle effects to Lantern Grove, all made from prefabs in <b>Assets/Zoo/VFX</b>.
+
+=IMG step08_fireflies|Fireflies around the fairy ring (additive: they glow).
+
+=IMG step08_smoke|Smoke rising from the beacon (alpha blend: it's soft and see-through).
+
+• <b>You will learn:</b> what a particle is; the Particle System modules that matter; emission, lifetime, speed and shape; colour and size over lifetime; additive vs alpha-blended materials; local vs world space; controlling effects from code.
+
+=PAGE The big idea
+A <b>particle</b> is a tiny flat image, usually a soft dot, that always faces the camera. A <b>particle system</b> is a little factory. It keeps creating (<b>emitting</b>) particles from a shape, gives each one a speed, size, colour and lifetime, changes them as they age, and deletes them when their time is up.
+
+One particle on its own looks like nothing. Two hundred, each drifting slightly differently and fading in and out, looks like a swarm of fireflies. The trick is <b>randomness within limits</b>: every value is a range, not a single number.
+
+=BOX #F2B65C|Real-world link
+Think of a sparkler. Each spark is born, flies outwards, cools from white to orange, and vanishes in under a second. Change how many are born, how fast they fly and how long they live and you have a completely different effect.
+=END
+
+=PAGE Key words
+<b><color=#F2B65C>Particle</color></b>: A small camera-facing image with its own position, speed, size, colour and age.
+
+<b><color=#F2B65C>Emission (Rate over Time)</color></b>: How many particles are born per second.
+
+<b><color=#F2B65C>Start Lifetime</color></b>: How long each particle lives, in seconds.
+
+<b><color=#F2B65C>Start Speed / Size / Colour</color></b>: Each particle's values when it's born. Use “Random Between Two Constants” for variety.
+
+<b><color=#F2B65C>Shape</color></b>: Where particles are born: a cone (smoke, fountains), box (an area), sphere (all around a point).
+
+<b><color=#F2B65C>Max Particles</color></b>: A cap on how many can exist at once, for performance.
+
+<b><color=#F2B65C>Over Lifetime</color></b>: Modules that change a value as the particle ages: colour, size, speed.
+
+<b><color=#F2B65C>Noise</color></b>: Wobbles particles along a smooth random path. Great for fireflies, leaves and dust.
+
+<b><color=#F2B65C>Gravity Modifier</color></b>: How strongly gravity pulls particles down. Negative values make them float up.
+
+<b><color=#F2B65C>Simulation Space</color></b>: <b>Local</b>: particles move with the emitter. <b>World</b>: once born, they stay in the world.
+
+<b><color=#F2B65C>Additive blending</color></b>: Particles add brightness to what's behind them, so they glow. Good for light, fire, magic.
+
+<b><color=#F2B65C>Alpha blending</color></b>: Particles are see-through but can be darker than the background. Good for smoke, leaves, dust clouds.
+
+=PAGE How Unity does it
+GameObject › Effects › <b>Particle System</b> creates one. The Inspector shows the <b>Main</b> module (always on) and a long list of optional <b>modules</b>, each with a tick box. You'll mostly use these:
+
+<b>Main</b>: Duration, Looping, Start Lifetime, Start Speed, Start Size, Start Colour, Gravity Modifier, Simulation Space, Max Particles.
+
+<b>Emission</b>: Rate over Time (per second), Rate over Distance (as the emitter moves), Bursts (lots at once).
+
+<b>Shape</b>: Emitter shape and size: Cone, Sphere, Box, Circle, Mesh…
+
+<b>Colour over Lifetime</b>: A gradient from birth to death, including transparency (fade in and out).
+
+<b>Size over Lifetime</b>: A curve: grow, shrink or pulse.
+
+<b>Noise</b>: Smooth random wobble. Strength and Frequency.
+
+<b>Renderer</b>: Which material is drawn, and how (billboard, stretched, mesh).
+
+=BOX #7BC48A|Tip
+With a Particle System selected, a small <b>Particle Effect</b> panel appears in the Scene view with Play, Restart and Stop. You can preview and tweak effects without entering Play mode.
+=END
+
+=PAGE What's in this scene
+All nine are in <b>LAYER 08 - Particles</b> and all use <b>World</b> simulation space:
+
+<b>Fireflies (Fairy Ring, Pond, Woods)</b><br><indent=4%><color=#9fe3ff>Rate /s:</color> 10<br><color=#9fe3ff>Lifetime:</color> 4–7 s<br><color=#9fe3ff>Speed:</color> 0.05–0.2<br><color=#9fe3ff>Size:</color> 0.06–0.12<br><color=#9fe3ff>Shape:</color> Box<br><color=#9fe3ff>Extras:</color> Colour over Lifetime, Noise; max 200<br><color=#9fe3ff>Material:</color> Additive</indent>
+
+<b>Beacon Smoke</b><br><indent=4%><color=#9fe3ff>Rate /s:</color> 8<br><color=#9fe3ff>Lifetime:</color> 3–4.5 s<br><color=#9fe3ff>Speed:</color> 0.4–0.9<br><color=#9fe3ff>Size:</color> 0.5–0.9<br><color=#9fe3ff>Shape:</color> Cone<br><color=#9fe3ff>Extras:</color> Colour + Size over Lifetime, Noise<br><color=#9fe3ff>Material:</color> Alpha blend</indent>
+
+<b>Falling Leaves (Tower Approach, Plaza)</b><br><indent=4%><color=#9fe3ff>Rate /s:</color> 6<br><color=#9fe3ff>Lifetime:</color> 5–7 s<br><color=#9fe3ff>Speed:</color> 0<br><color=#9fe3ff>Size:</color> 0.12–0.2<br><color=#9fe3ff>Shape:</color> Box<br><color=#9fe3ff>Extras:</color> Gravity 0.05, Noise<br><color=#9fe3ff>Material:</color> Alpha blend</indent>
+
+<b>Magic Sparkle (Giant Mushroom)</b><br><indent=4%><color=#9fe3ff>Rate /s:</color> 30<br><color=#9fe3ff>Lifetime:</color> 0.8–1.6 s<br><color=#9fe3ff>Speed:</color> 0.1–0.5<br><color=#9fe3ff>Size:</color> 0.05–0.14<br><color=#9fe3ff>Shape:</color> Sphere<br><color=#9fe3ff>Extras:</color> Gravity −0.05 (floats up), Size over Lifetime<br><color=#9fe3ff>Material:</color> Additive</indent>
+
+<b>Dust Motes (Tower Ground, Upper)</b><br><indent=4%><color=#9fe3ff>Rate /s:</color> 12<br><color=#9fe3ff>Lifetime:</color> 6–10 s<br><color=#9fe3ff>Speed:</color> 0.02–0.08<br><color=#9fe3ff>Size:</color> 0.02–0.04<br><color=#9fe3ff>Shape:</color> Box<br><color=#9fe3ff>Extras:</color> Colour over Lifetime, Noise<br><color=#9fe3ff>Material:</color> Additive</indent>
+
+Read the table as a recipe book. Fireflies: few, slow, long-lived, wobbly, glowing. Sparkle: many, fast, short-lived, floating upwards. Leaves: no starting speed at all, just a tiny pull of gravity plus noise, so they flutter down.
+
+The prefab library in <b>Assets/Zoo/VFX</b> also has effects not used here yet: <i>VFX_CampfireFlames, VFX_Fountain, VFX_GroundMist, VFX_Rain, VFX_Snow, VFX_Sparks</i> and <i>VFX_Smoke</i>. Drag any of them into the scene to try them.
+
+=IMG step08_hero|From the start clearing the particles are subtle. They're meant to be discovered up close.
+
+=PAGE Build it yourself: a campfire in three layers
+<color=#F2B65C><b>1.</b></color> GameObject › Effects › Particle System. Name it <b>Fire</b>. Rotate it so it points up (Rotation X = −90).
+
+<color=#F2B65C><b>2.</b></color> Main: Start Lifetime 0.6–1.0, Start Speed 0.8–1.5, Start Size 0.3–0.6, Start Colour orange. Gravity Modifier −0.2.
+
+<color=#F2B65C><b>3.</b></color> Shape: Cone, Angle 10, Radius 0.25. Emission: Rate over Time 40.
+
+<color=#F2B65C><b>4.</b></color> Colour over Lifetime: white-yellow -> orange -> dark red, with alpha fading to 0 at the end. Size over Lifetime: shrink to nothing.
+
+<color=#F2B65C><b>5.</b></color> Renderer: Material <b>VFX_Additive</b>. It should now glow.
+
+<color=#F2B65C><b>6.</b></color> Duplicate it (Ctrl + D), rename <b>Smoke</b>: slower, bigger, longer-lived (3 s), grey, material <b>VFX_AlphaBlend</b>, Rate 6. Move it up 0.5 m.
+
+<color=#F2B65C><b>7.</b></color> Duplicate again for <b>Sparks</b>: tiny size (0.03), fast speed (2–4), short life (0.5 s), Rate 10, gravity 0.3 so they arc and fall.
+
+<color=#F2B65C><b>8.</b></color> Group all three under an empty <b>Campfire</b> object, add a Point Light (orange, Range 6) and the Flicker script from Step 03. Save it as a prefab by dragging Campfire into the Project window.
+
+=BOX #E58A7A|Watch out
+Particles are cheap individually but add up. Keep Max Particles sensible, avoid huge overlapping transparent particles (the graphics card draws every layer), and remember particles behind walls still cost something if they're on screen.
+=END
+
+=PAGE The code
+Particle systems can be started, stopped and changed from scripts. This one makes the fireflies come out only when the player is nearby, a nice way to reward exploring.
+
+=CODE ShyFireflies.cs (put it on a trigger collider around the fairy ring)
+using UnityEngine;
+
+// SHY FIREFLIES: more fireflies come out while the player is close.
+public class ShyFireflies : MonoBehaviour
+{
+    // ---------- Settings you can change in the Inspector ----------
+
+    // Drag the fireflies particle system in here.
+    public ParticleSystem fireflies;
+
+    // Fireflies per second when nobody is around, and when the player is close.
+    public float normalRate = 2f;
+    public float excitedRate = 25f;
+
+
+    // The player walked in: lots of fireflies.
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") == false)
+        {
+            return;
+        }
+
+        SetRate(excitedRate);
+    }
+
+
+    // The player walked out: back to just a few.
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player") == false)
+        {
+            return;
+        }
+
+        SetRate(normalRate);
+    }
+
+
+    // Change how many fireflies appear each second.
+    private void SetRate(float perSecond)
+    {
+        // Get the particle system's Emission module, then change its rate.
+        ParticleSystem.EmissionModule emission = fireflies.emission;
+        emission.rateOverTime = perSecond;
+    }
+}
+=END
+
+<b>9</b>: A slot to drag the particle system into.
+
+<b>17, 29</b>: Run when the player walks into or out of this object's trigger collider.
+
+<b>24, 36</b>: Both call our own method <b>SetRate</b>, with a different number each time.
+
+<b>44</b>: Particle settings are grouped into <b>modules</b>. Get the <b>emission</b> module into a variable first…
+
+<b>45</b>: …then change its rate. The change applies straight away; you don't need to copy it back.
+
+Other useful one-liners: <b>fireflies.Play();</b>, <b>fireflies.Stop();</b>, and <b>fireflies.Emit(50);</b> for an instant burst, for example when a gem is collected (Step 09's gems call <b>Play()</b> on an effect when you pick them up).
+
+=PAGE Try this
+<color=#9fe3ff><b>1.</b></color> Double the fireflies' Emission Rate (10 -> 20). Is more always better?
+
+<color=#9fe3ff><b>2.</b></color> Make the beacon smoke darker using Colour over Lifetime. What story does dark smoke tell compared with white?
+
+<color=#9fe3ff><b>3.</b></color> Add the <b>VFX_Sparks</b> prefab to the beacon at the top of the tower.
+
+<color=#9fe3ff><b>4.</b></color> <b>Stretch:</b> change the Woods fireflies' Simulation Space to Local, then move the emitter in Play mode. What's different?
+
+=PAGE Common problems
+<b>Particles are pink squares.</b><br><indent=4%>The Renderer has no material or a non-URP one. Use VFX_Additive or VFX_AlphaBlend (or a URP Particles material).</indent>
+
+<b>Particles appear as hard white squares.</b><br><indent=4%>The material has no soft round texture. Use one of the VFX_ materials.</indent>
+
+<b>Smoke goes sideways or down.</b><br><indent=4%>The emitter is rotated wrongly. A Cone emits along the object's blue (Z) axis; rotate X to −90 to point up.</indent>
+
+<b>Effect disappears when I look away and back.</b><br><indent=4%>Its bounds are too small, or Max Particles is reached. Raise Max Particles.</indent>
+
+<b>Particles stay glued to a moving object.</b><br><indent=4%>Simulation Space is Local. Switch to World for trails, smoke and sparks.</indent>
+
+=PAGE Check your understanding
+<color=#9fe3ff><b>Q1</b></color>  What three things make fireflies look different from a magic sparkle?
+
+<color=#9fe3ff><b>Q2</b></color>  Why do fireflies use an additive material but smoke uses alpha blend?
+
+<color=#9fe3ff><b>Q3</b></color>  How do the leaves fall without any starting speed?
+
+<color=#9fe3ff><b>Q4</b></color>  What's the difference between Local and World simulation space?
+
+<color=#9fe3ff><b>Q5</b></color>  How do you change a particle system's emission rate from code?
+
+<i>Answers are on the next page. Have a go first!</i>
+
+=PAGE Answers
+<color=#9fe3ff><b>A1</b></color>  Fireflies: low rate, slow speed, long lifetime. Sparkle: high rate, faster, short lifetime (and floats up).
+
+<color=#9fe3ff><b>A2</b></color>  Additive adds light so things glow; smoke needs to be soft and can be darker than the background.
+
+<color=#9fe3ff><b>A3</b></color>  A small Gravity Modifier pulls them down and Noise makes them flutter.
+
+<color=#9fe3ff><b>A4</b></color>  Local particles move with the emitter; World particles stay where they were born.
+
+<color=#9fe3ff><b>A5</b></color>  Get the emission module (ParticleSystem.EmissionModule emission = fireflies.emission;) then set emission.rateOverTime.

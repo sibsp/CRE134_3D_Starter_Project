@@ -1,0 +1,7 @@
+@startuml
+class ZooClipPlayer {
+    + speed : float = 1f
+}
+MonoBehaviour <|-- ZooClipPlayer
+ZooClipPlayer --> "clip" AnimationClip
+@enduml

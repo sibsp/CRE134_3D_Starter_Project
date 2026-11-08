@@ -1,0 +1,7 @@
+@startuml
+class FloatBob {
+    + height : float = 0.15f
+    + speed : float = 1f
+}
+MonoBehaviour <|-- FloatBob
+@enduml

@@ -1,0 +1,27 @@
+@startuml
+class StepGuideViewer {
+    + stepLabel : string = "STEP 01"
+    + showHint : bool = true
+    + SetOpen(open:bool) : void
+    + IsGuideOpen() : bool
+    + GetPageCount() : int
+    + PreviewPage(index:int) : void
+}
+class Block {
+    + kind : string = ""
+    + text : string = ""
+    + extra : string = ""
+}
+class Page {
+    + title : string = ""
+}
+class "List`1"<T> {
+}
+MonoBehaviour <|-- StepGuideViewer
+StepGuideViewer --> "guide" TextAsset
+StepGuideViewer o-> "openKey" Key
+StepGuideViewer +-- Block
+Block o-> "lines<string>" "List`1"
+StepGuideViewer +-- Page
+Page o-> "blocks<Block>" "List`1"
+@enduml

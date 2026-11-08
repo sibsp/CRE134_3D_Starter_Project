@@ -1,0 +1,263 @@
+@startuml
+title Class diagram
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+hide empty members
+
+package Gym {
+  class GymMetrics {
+    + walkSpeed : float
+    + sprintSpeed : float
+    + jumpHeight : float
+    + gravity : float
+    + stepOffset : float
+    + slopeLimit : float
+    + height : float
+    + width : float
+    + eyeHeight : float
+    + GetAirTime() : float
+    + GetJumpDistanceWalking() : float
+    + GetJumpDistanceSprinting() : float
+    + {static} ReadFromPlayer() : GymMetrics
+  }
+  class GymTeleporter {
+    + {static} Instance : GymTeleporter
+    + stations : Transform[]
+    + stationNames : string[]
+    + Teleport(index:int) : void
+  }
+  class MetricSign {
+    + template : string
+    + Refresh() : void
+  }
+  class TeleportPad {
+    + stationIndex : int
+  }
+}
+
+package LearningAreas {
+  class AreaKit <<static>> {
+    + {static} SceneFolder : string
+    + {static} MatFolder : string
+    + {static} Root : Transform
+    + {static} NewScene(sceneName:string) : Scene
+    + {static} Save() : void
+    + {static} Group(groupName:string, parent:Transform) : Transform
+    + {static} Group(groupName:string) : Transform
+    + {static} Mat(materialName:string, colour:Color, smoothness:float) : Material
+    + {static} Mat(materialName:string, colour:Color, smoothness:float, metallic:float) : Material
+    + {static} GlowMat(materialName:string, colour:Color, smoothness:float, glowColour:Color) : Material
+    + {static} SeeThroughMat(materialName:string, colour:Color, smoothness:float) : Material
+    + {static} TexturedMat(materialName:string, colour:Color, smoothness:float, texture:Texture, tiling:Vector2) : Material
+    + {static} PatternTexture(textureName:string, colourA:Color, colourB:Color, pattern:string) : Texture2D
+    + {static} Shape(shapeType:string, objectName:string, parent:Transform, bottomCentre:Vector3, angles:Vector3, material:Material, settings:Dictionary~string,object~, addCollider:bool) : GameObject
+    + {static} Box(objectName:string, parent:Transform, centre:Vector3, size:Vector3, material:Material) : GameObject
+    + {static} Box(objectName:string, parent:Transform, centre:Vector3, size:Vector3, material:Material, yaw:float, addCollider:bool) : GameObject
+    + {static} Prim(primitiveType:PrimitiveType, objectName:string, parent:Transform, position:Vector3, scale:Vector3, material:Material, addCollider:bool, yaw:float) : GameObject
+    + {static} Room(roomName:string, centre:Vector3, size:Vector3, wall:Material, floor:Material, ceiling:Material, doorWidth:float, doorHeight:float, addCeiling:bool) : Transform
+    + {static} Model(assetPath:string, parent:Transform, position:Vector3, yaw:float, targetHeight:float) : GameObject
+    + {static} FindModel(fileName:string) : string
+    + {static} VFX(prefabName:string, parent:Transform, position:Vector3, scale:float) : GameObject
+    + {static} Bounds(target:GameObject) : Bounds
+    + {static} Sun(angles:Vector3, colour:Color, intensity:float, shadows:bool) : Light
+    + {static} Point(lightName:string, parent:Transform, position:Vector3, colour:Color, range:float, intensity:float, shadows:bool) : Light
+    + {static} Spot(lightName:string, parent:Transform, position:Vector3, lookAt:Vector3, colour:Color, range:float, angle:float, intensity:float, shadows:bool) : Light
+    + {static} Ambient(sky:Color, equator:Color, ground:Color, skybox:Material) : void
+    + {static} Text(parent:Transform, text:string, position:Vector3, yaw:float, size:float, colour:Color, width:float, height:float, alignment:TextAlignmentOptions) : TextMeshPro
+    + {static} Plaque(parent:Transform, text:string, position:Vector3, yaw:float) : void
+    + {static} NoticeBoard(position:Vector3, yaw:float, title:string, what:string, tasks:string[]) : void
+    + {static} AddPlayer(position:Vector3, yaw:float) : Transform
+    + {static} AddUI(title:string, showCounters:bool, visitedLabel:string, total:int) : MuseumUI
+    + {static} Zone(parent:Transform, zoneName:string, centre:Vector3, size:Vector3) : TriggerZone
+    + {static} InfoZone(ui:MuseumUI, title:string, info:string, centre:Vector3, size:Vector3, visitId:string) : TriggerZone
+  }
+  class FloatBob {
+    + height : float
+    + speed : float
+  }
+  class LightFlicker {
+    + minIntensity : float
+    + maxIntensity : float
+    + speed : float
+  }
+  class LightningFlash {
+    + flashIntensity : float
+    + minWait : float
+    + maxWait : float
+    + thunder : AudioSource
+  }
+  class PhysicsRelease {
+    + bodies : Rigidbody[]
+    + Release() : void
+    + ResetBodies() : void
+  }
+  class ToggleComponent {
+    + target : Behaviour
+    + Toggle() : void
+    + TurnOn() : void
+    + TurnOff() : void
+  }
+}
+
+package LearningSteps {
+  class SkyboxPad {
+    + skybox : Material
+    + sun : Light
+    + sunRotation : Vector3
+    + sunColour : Color
+    + sunIntensity : float
+    + ambientSky : Color
+    + ambientEquator : Color
+    + ambientGround : Color
+    + fogColour : Color
+    + padRenderer : Renderer
+    + idleGlow : Color
+    + activeGlow : Color
+    + Apply() : void
+  }
+  class StepGuideViewer {
+    + guide : TextAsset
+    + stepLabel : string
+    + images : Texture2D[]
+    + openKey : Key
+    + showHint : bool
+    + SetOpen(open:bool) : void
+    + IsGuideOpen() : bool
+    + GetPageCount() : int
+    + PreviewPage(index:int) : void
+  }
+}
+
+package Museum {
+  class Collectible {
+    + spinSpeed : float
+    + bobHeight : float
+    + bobSpeed : float
+    + collectEffect : ParticleSystem
+  }
+  class FogZone {
+    + fogColour : Color
+    + mode : FogMode
+    + densityAtStart : float
+    + densityAtEnd : float
+    + UseLinear() : void
+    + UseExponential() : void
+    + UseExponentialSquared() : void
+  }
+  class GemGate {
+    + gemsNeeded : int
+    + onUnlocked : UnityEvent
+  }
+  class InteractPrompt {
+    + promptText : string
+    + key : Key
+    + onInteract : UnityEvent
+  }
+  class LightSwitch {
+    + lights : Light[]
+    + bulbs : Renderer[]
+    + onMaterial : Material
+    + offMaterial : Material
+    + startOn : bool
+    + Toggle() : void
+    + SetOn(on:bool) : void
+  }
+  class MuseumUI {
+    + {static} Instance : MuseumUI
+    + titleGroup : CanvasGroup
+    + titleText : TMP_Text
+    + titleShowTime : float
+    + infoGroup : CanvasGroup
+    + infoText : TMP_Text
+    + promptGroup : CanvasGroup
+    + promptText : TMP_Text
+    + wingsText : TMP_Text
+    + gemsText : TMP_Text
+    + totalWings : int
+    + visitedLabel : string
+    + fadeSpeed : float
+    + onGemsChanged : UnityEvent~int~
+    + ShowTitle(title:string) : void
+    + ShowInfo(text:string) : void
+    + HideInfo() : void
+    + ShowPrompt(text:string) : void
+    + HidePrompt() : void
+    + VisitWing(wingName:string) : void
+    + AddGem() : void
+    + GetGemCount() : int
+  }
+  class Patrol {
+    + waypoints : Transform[]
+    + speed : float
+    + turnSpeed : float
+    + waitAtPoint : float
+    + isEnemy : bool
+    + alertRadius : float
+  }
+  class Rotator {
+    + degreesPerSecond : Vector3
+    + space : Space
+  }
+  class TriggerZone {
+    + playerTag : string
+    + onlyOnce : bool
+    + onPlayerEnter : UnityEvent
+    + onPlayerExit : UnityEvent
+  }
+}
+
+package Zoo {
+  class ZooGenerator <<static>> {
+    + {static} Generate(folder:string, origin:Vector3) : GameObject
+    + {static} GroupName(modelName:string) : string
+    + {static} GetClips(path:string) : List~AnimationClip~
+    + {static} Bounds(target:GameObject) : Bounds
+    + {static} Label(parent:Transform, text:string, position:Vector3, size:float, width:float, alignment:TextAlignmentOptions) : TextMeshPro
+  }
+  class ZooClipPlayer {
+    + clip : AnimationClip
+    + speed : float
+  }
+  class ZooLighting {
+    + sun : Light
+    + lamps : Light[]
+    + cycleKey : Key
+    + Apply(index:int) : void
+  }
+  class Preset {
+    + name : string
+    + sunAngles : Vector3
+    + sunColour : Color
+    + sunIntensity : float
+    + skyAmbient : Color
+    + equatorAmbient : Color
+    + groundAmbient : Color
+    + lampsOn : bool
+  }
+}
+
+
+MonoBehaviour <|-- GymTeleporter
+MonoBehaviour <|-- MetricSign
+MonoBehaviour <|-- TeleportPad
+MonoBehaviour <|-- FloatBob
+MonoBehaviour <|-- LightFlicker
+MonoBehaviour <|-- LightningFlash
+MonoBehaviour <|-- PhysicsRelease
+MonoBehaviour <|-- ToggleComponent
+MonoBehaviour <|-- SkyboxPad
+MonoBehaviour <|-- StepGuideViewer
+MonoBehaviour <|-- Collectible
+MonoBehaviour <|-- FogZone
+MonoBehaviour <|-- GemGate
+MonoBehaviour <|-- InteractPrompt
+MonoBehaviour <|-- LightSwitch
+MonoBehaviour <|-- MuseumUI
+MonoBehaviour <|-- Patrol
+MonoBehaviour <|-- Rotator
+MonoBehaviour <|-- TriggerZone
+MonoBehaviour <|-- ZooClipPlayer
+ZooLighting --> "presets" Preset
+MonoBehaviour <|-- ZooLighting
+ZooLighting +-- Preset
+@enduml

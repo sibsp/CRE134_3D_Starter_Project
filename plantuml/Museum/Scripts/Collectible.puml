@@ -1,0 +1,9 @@
+@startuml
+class Collectible {
+    + spinSpeed : float = 90f
+    + bobHeight : float = 0.15f
+    + bobSpeed : float = 2f
+}
+MonoBehaviour <|-- Collectible
+Collectible --> "collectEffect" ParticleSystem
+@enduml

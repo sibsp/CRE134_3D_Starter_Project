@@ -1,0 +1,614 @@
+=PAGE UI and Triggers
+=SUB Let the game talk to the player: place names, info panels, Press-E prompts, collectable gems and rewards.
+
+Lantern Grove becomes a small game. Walk into an area and its name fades in at the top of the screen with a hint at the bottom. Stand by the signpost and a “Press E” prompt appears. Three glowing gems are hidden around the grove; collect all three and a reward appears at the tower. All of this runs on two ideas: <b>trigger zones</b> and <b>UnityEvents</b>.
+
+=IMG step09_ui|The UI in action: place title (top), counters (top left), crosshair and prompt (centre), info panel (bottom).
+
+• <b>You will learn:</b> the Canvas and UI elements; trigger colliders; OnTriggerEnter and OnTriggerExit; UnityEvents wired in the Inspector; collectables and counters; a simple “unlock”; reading five short scripts.
+
+=PAGE The big idea
+A <b>trigger</b> is an invisible collider you can walk through. Instead of blocking you, it notices you and announces “the player came in” or “the player left”. That single signal can start almost anything: show text, open a door, play a sound, spawn a monster.
+
+<b>UI</b> (user interface) is the layer of information drawn flat on the screen, on top of the 3D world: text, panels, counters, crosshairs. Good UI tells players only what they need, when they need it, and then gets out of the way.
+
+The clever part is how they connect. Instead of writing a new script for every sign, Lantern Grove uses a few general-purpose scripts with <b>UnityEvents</b>: empty slots in the Inspector where you drag in an object and pick what should happen. Designers can build new interactions without writing code.
+
+=BOX #F2B65C|Real-world link
+Automatic doors in a shop have a sensor zone (the trigger). Walk in: the doors open. Walk out: they close. The sensor doesn't care what happens next; it just sends the signal. A UnityEvent is the wire from the sensor to the doors.
+=END
+
+=PAGE Key words
+<b><color=#F2B65C>Canvas</color></b>: The GameObject that holds all UI. Everything UI must be its child.
+
+<b><color=#F2B65C>Screen Space - Overlay</color></b>: Canvas mode where UI is drawn flat on top of the screen, unaffected by the 3D world.
+
+<b><color=#F2B65C>RectTransform</color></b>: The UI version of Transform: anchors, pivot, width and height.
+
+<b><color=#F2B65C>Anchor</color></b>: Where a UI element is pinned (e.g. top-left), so it stays put on any screen size.
+
+<b><color=#F2B65C>TextMeshPro (TMP)</color></b>: Unity's sharp, flexible text component.
+
+<b><color=#F2B65C>Canvas Group</color></b>: Lets you fade a whole group of UI (alpha 0–1) at once.
+
+<b><color=#F2B65C>Trigger</color></b>: A collider with <b>Is Trigger</b> ticked: things pass through it, but it reports entry and exit.
+
+<b><color=#F2B65C>OnTriggerEnter / Exit</color></b>: Script methods Unity calls when something enters or leaves a trigger.
+
+<b><color=#F2B65C>Tag</color></b>: A label on a GameObject (e.g. <b>Player</b>) so scripts can tell what entered.
+
+<b><color=#F2B65C>UnityEvent</color></b>: A list of actions set up in the Inspector and fired from code.
+
+<b><color=#F2B65C>Singleton</color></b>: A pattern where there's exactly one of something (one UI manager) that any script can find via a static Instance.
+
+=PAGE How Unity does it
+=H3 UI
+
+<color=#F2B65C><b>1.</b></color> GameObject › UI › <b>Canvas</b>. Unity also adds an <b>EventSystem</b> (needed for clicks and input).
+
+<color=#F2B65C><b>2.</b></color> Right-click the Canvas › UI › <b>Text - TextMeshPro</b> (import TMP Essentials if asked) or › <b>Image</b> for panels.
+
+<color=#F2B65C><b>3.</b></color> Use the <b>Anchor Presets</b> square at the top of the RectTransform (hold Alt to also move it) to pin elements to a corner or edge.
+
+<color=#F2B65C><b>4.</b></color> On the Canvas, set Canvas Scaler › UI Scale Mode to <b>Scale With Screen Size</b> so the UI looks right on any resolution.
+
+=H3 Triggers and events
+
+<color=#F2B65C><b>1.</b></color> Make an object with a collider (e.g. a Cube), untick its Mesh Renderer, and tick <b>Is Trigger</b> on the collider.
+
+<color=#F2B65C><b>2.</b></color> Add the <b>Trigger Zone</b> script. It shows two event lists: <b>On Player Enter ()</b> and <b>On Player Exit ()</b>.
+
+<color=#F2B65C><b>3.</b></color> Click + under On Player Enter. Drag the object you want to affect into the slot (e.g. the UI Canvas).
+
+<color=#F2B65C><b>4.</b></color> From the dropdown choose a component and method, e.g. <b>MuseumUI › ShowTitle (string)</b>, then type the text.
+
+=BOX #7FC6E0|Good to know
+For a trigger to fire, one of the two objects must have a Rigidbody <i>or</i> a Character Controller. The player has a Character Controller, so player-vs-trigger always works. The player must also be tagged <b>Player</b>.
+=END
+
+=PAGE What's in this scene
+Everything is under <b>LAYER 09 - UI and Triggers</b>. The scripts come from the Lantern Museum project, so they're in <i>Assets/Museum/Scripts</i>.
+
+<b>Lantern Grove UI (Canvas)</b><br><indent=4%><color=#9fe3ff>Components:</color> Canvas, MuseumUI<br><color=#9fe3ff>What it does:</color> Holds Place Title, Info Panel, Interact Prompt, Counters and Crosshair. MuseumUI counts “Places found: x / 6” and gems.</indent>
+
+<b>Place Triggers (6)</b><br><indent=4%><color=#9fe3ff>Components:</color> Box Collider (trigger), TriggerZone<br><color=#9fe3ff>What it does:</color> Lantern Grove, Old Stream Bridge, Fairy Ring, Deer Pond, The Old Watchtower, The Lookout.</indent>
+
+<b>Signpost - Press E</b><br><indent=4%><color=#9fe3ff>Components:</color> Sphere Collider (trigger), InteractPrompt<br><color=#9fe3ff>What it does:</color> “Press E to read the signpost” -> ShowInfo.</indent>
+
+<b>Beacon - Press E</b><br><indent=4%><color=#9fe3ff>Components:</color> Sphere Collider (trigger), InteractPrompt<br><color=#9fe3ff>What it does:</color> “Press E to light the beacon” -> Beacon Flare Toggle + ShowTitle.</indent>
+
+<b>Beacon Flare (off until lit)</b><br><indent=4%><color=#9fe3ff>Components:</color> Light, LightSwitch<br><color=#9fe3ff>What it does:</color> A light that starts off and is toggled by the beacon prompt.</indent>
+
+<b>Gem 1 - Bridge, Gem 2 - Fairy Ring, Gem 3 - Pond</b><br><indent=4%><color=#9fe3ff>Components:</color> Sphere Collider (trigger), Collectible<br><color=#9fe3ff>What it does:</color> Spin and bob; walk into them to collect.</indent>
+
+<b>Gems</b><br><indent=4%><color=#9fe3ff>Components:</color> GemGate (3 needed)<br><color=#9fe3ff>What it does:</color> When 3 gems are collected: shows the Tower Sparkle reward and a title.</indent>
+
+Here's how one place trigger is wired. <b>Place - Lantern Grove</b> has these events:
+
+<b>On Player Enter</b><br><indent=4%><color=#9fe3ff>Target:</color> Lantern Grove UI (Canvas)<br><color=#9fe3ff>Method and value:</color> ShowTitle (“Lantern Grove”)</indent>
+
+<br><indent=4%><color=#9fe3ff>Target:</color> Lantern Grove UI (Canvas)<br><color=#9fe3ff>Method and value:</color> VisitWing (“Clearing”): counts this place as found</indent>
+
+<br><indent=4%><color=#9fe3ff>Target:</color> Lantern Grove UI (Canvas)<br><color=#9fe3ff>Method and value:</color> ShowInfo (“Follow the lanterns to the old watchtower. Three glowing gems are hidden along the way.”)</indent>
+
+<b>On Player Exit</b><br><indent=4%><color=#9fe3ff>Target:</color> Lantern Grove UI (Canvas)<br><color=#9fe3ff>Method and value:</color> HideInfo ()</indent>
+
+=IMG step09_gem|Gem 1 on the footbridge. Gems use the LG_Gem material from Step 02 and the Collectible script.
+
+=PAGE The code
+Five short scripts do all the work. Each does <i>one</i> job, which makes them easy to reuse.
+
+Each script is shown as it appears in the project, without the comment block at the top of the file.
+
+=H3 1. TriggerZone: “something walked in”
+
+=CODE TriggerZone.cs
+[RequireComponent(typeof(Collider))]
+public class TriggerZone : MonoBehaviour
+{
+    // ---------- Settings you can change in the Inspector ----------
+
+    // Only objects with this tag will set off the trigger.
+    [Tooltip("Only react to objects with this tag.")]
+    public string playerTag = "Player";
+
+    // If ticked, the "enter" actions only happen the first time.
+    [Tooltip("Tick to only fire the first time the player enters.")]
+    public bool onlyOnce = false;
+
+    // A UnityEvent is a list of actions you fill in using the Inspector.
+    public UnityEvent onPlayerEnter = new UnityEvent();
+    public UnityEvent onPlayerExit = new UnityEvent();
+
+    // ---------- Private variables (only this script can use these) ----------
+
+    // Remembers whether the enter actions have already happened.
+    private bool hasFired = false;
+
+
+    // Reset() is called by Unity when you first add this script to an object.
+    // We use it to tick "Is Trigger" on the collider for you.
+    private void Reset()
+    {
+        Collider myCollider = GetComponent<Collider>();
+        myCollider.isTrigger = true;
+    }
+
+
+    // Unity calls OnTriggerEnter when another collider walks INTO this trigger.
+    // "other" is the collider that came in.
+    private void OnTriggerEnter(Collider other)
+    {
+        // Ignore anything that is not the player (animals, crates...).
+        if (other.CompareTag(playerTag) == false)
+        {
+            return;
+        }
+
+        // If we only want this to happen once, and it already has, stop here.
+        if (onlyOnce == true && hasFired == true)
+        {
+            return;
+        }
+
+        hasFired = true;
+
+        // Run every action listed under "On Player Enter" in the Inspector.
+        onPlayerEnter.Invoke();
+    }
+
+
+    // Unity calls OnTriggerExit when another collider walks OUT of this trigger.
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag(playerTag) == false)
+        {
+            return;
+        }
+
+        // Run every action listed under "On Player Exit" in the Inspector.
+        onPlayerExit.Invoke();
+    }
+}
+=END
+
+<b>7–12</b>: Settings. <b>[Tooltip]</b> shows a hint when you hover over the setting in the Inspector.
+
+<b>15–16</b>: Two <b>UnityEvent</b>s. These are the “On Player Enter / Exit” lists you fill in the Inspector.
+
+<b>21</b>: A <b>private</b> variable that remembers whether the enter actions have already happened.
+
+<b>26–30</b>: <b>Reset</b> runs when you first add the script, and ticks Is Trigger for you. A nice touch for designers.
+
+<b>35</b>: Unity calls this when any collider enters the trigger.
+
+<b>38–41</b>: <b>CompareTag</b>: ignore anything that isn't the player (an animal, a crate).
+
+<b>44–49</b>: Optional “only once” mode, for one-time story moments.
+
+<b>52</b>: <b>Invoke()</b> runs every action listed in the Inspector, in order.
+
+=H3 2. InteractPrompt: “Press E”
+
+=CODE InteractPrompt.cs
+[RequireComponent(typeof(Collider))]
+public class InteractPrompt : MonoBehaviour
+{
+    // ---------- Settings you can change in the Inspector ----------
+
+    // The message shown in the middle of the screen.
+    public string promptText = "Press E to interact";
+
+    // Which keyboard key the player presses.
+    public Key key = Key.E;
+
+    // The actions that happen when the key is pressed.
+    public UnityEvent onInteract = new UnityEvent();
+
+    // ---------- Private variables ----------
+
+    // True while the player is standing inside the trigger.
+    private bool playerInside = false;
+
+
+    // The player walked into the trigger: remember that, and show the prompt.
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") == false)
+        {
+            return;
+        }
+
+        playerInside = true;
+
+        // MuseumUI.Instance is the one on-screen UI in the scene (see MuseumUI.cs).
+        if (MuseumUI.Instance != null)
+        {
+            MuseumUI.Instance.ShowPrompt(promptText);
+        }
+    }
+
+
+    // The player walked out of the trigger: forget it, and hide the prompt.
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player") == false)
+        {
+            return;
+        }
+
+        playerInside = false;
+
+        if (MuseumUI.Instance != null)
+        {
+            MuseumUI.Instance.HidePrompt();
+        }
+    }
+
+
+    // Update runs every frame. We check whether the key was pressed.
+    private void Update()
+    {
+        // If the player isn't standing here, there is nothing to check.
+        if (playerInside == false)
+        {
+            return;
+        }
+
+        // Keyboard.current is the keyboard (it can be missing, e.g. on a phone).
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard == null)
+        {
+            return;
+        }
+
+        // wasPressedThisFrame is only true on the frame the key goes down,
+        // so holding the key does not repeat the action.
+        if (keyboard[key].wasPressedThisFrame)
+        {
+            onInteract.Invoke();
+        }
+    }
+}
+=END
+
+<b>18</b>: <b>playerInside</b> remembers whether the player is standing in the trigger.
+
+<b>22–36</b>: Player walked in: remember it, and ask the UI to show the prompt. <b>MuseumUI.Instance</b> is a shortcut to the one UI manager in the scene (see script 5).
+
+<b>40–53</b>: Player walked out: forget it, and hide the prompt.
+
+<b>60–63</b>: In <b>Update</b>, there's nothing to check unless the player is inside.
+
+<b>66–70</b>: <b>Keyboard.current</b> is the keyboard, using the new Input System. It can be missing (on a phone), so we check.
+
+<b>74–77</b>: <b>wasPressedThisFrame</b> is only true on the frame the key goes down, so holding E doesn't repeat the action.
+
+=H3 3. Collectible: the gems
+
+=CODE Collectible.cs
+[RequireComponent(typeof(Collider))]
+public class Collectible : MonoBehaviour
+{
+    // ---------- Settings you can change in the Inspector ----------
+
+    // How fast it spins, in degrees per second.
+    public float spinSpeed = 90f;
+
+    // How far it moves up and down, in metres.
+    public float bobHeight = 0.15f;
+
+    // How fast it moves up and down.
+    public float bobSpeed = 2f;
+
+    // Optional: a particle effect to play when it is collected.
+    public ParticleSystem collectEffect;
+
+    // ---------- Private variables ----------
+
+    // Where the gem started, so it bobs around that point.
+    private Vector3 startPosition;
+
+
+    // Start runs once, when the game begins.
+    private void Start()
+    {
+        startPosition = transform.position;
+    }
+
+
+    // Update runs every frame: spin a little, and bob up or down a little.
+    private void Update()
+    {
+        // Spin around the world's up axis.
+        // Multiplying by Time.deltaTime makes it "degrees per second", not per frame.
+        float degreesThisFrame = spinSpeed * Time.deltaTime;
+        transform.Rotate(0f, degreesThisFrame, 0f, Space.World);
+
+        // Mathf.Sin smoothly swings between -1 and 1 as time goes on.
+        // Multiplying by bobHeight turns that into a small distance up or down.
+        float wave = Mathf.Sin(Time.time * bobSpeed);
+        float heightOffset = wave * bobHeight;
+        transform.position = startPosition + new Vector3(0f, heightOffset, 0f);
+    }
+
+
+    // The player walked into the gem: collect it.
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") == false)
+        {
+            return;
+        }
+
+        // Tell the on-screen UI to add one gem to the counter.
+        if (MuseumUI.Instance != null)
+        {
+            MuseumUI.Instance.AddGem();
+        }
+
+        // Play the sparkle. We un-parent it first, otherwise it would be
+        // hidden along with the gem on the next line.
+        if (collectEffect != null)
+        {
+            collectEffect.transform.SetParent(null);
+            collectEffect.Play();
+        }
+
+        // Switch the whole gem off so it disappears.
+        gameObject.SetActive(false);
+    }
+}
+=END
+
+<b>36–37</b>: Spin around the world's up axis, 90° per second.
+
+<b>41–43</b>: Bob up and down: <b>Mathf.Sin</b> swings between −1 and 1, times 0.15 m.
+
+<b>56–59</b>: Tell the UI manager to add one gem.
+
+<b>63–67</b>: Detach the sparkle effect first (so it isn't hidden with the gem), then play it.
+
+<b>70</b>: Hide the gem. <b>SetActive(false)</b> switches the whole GameObject off.
+
+=H3 4. GemGate: “unlock when you have 3”
+
+=CODE GemGate.cs
+public class GemGate : MonoBehaviour
+{
+    // ---------- Settings you can change in the Inspector ----------
+
+    // How many gems the player must collect.
+    public int gemsNeeded = 3;
+
+    // What happens when they have enough.
+    public UnityEvent onUnlocked = new UnityEvent();
+
+    // ---------- Private variables ----------
+
+    // Becomes true once the gate has opened, so it only happens once.
+    private bool unlocked = false;
+
+
+    private void Start()
+    {
+        // Ask MuseumUI to tell us every time the gem count changes.
+        // "AddListener(CheckGems)" means: whenever onGemsChanged happens,
+        // call our CheckGems method below and give it the new number.
+        if (MuseumUI.Instance != null)
+        {
+            MuseumUI.Instance.onGemsChanged.AddListener(CheckGems);
+        }
+    }
+
+
+    // Called by MuseumUI each time a gem is collected.
+    // "gems" is the new total.
+    private void CheckGems(int gems)
+    {
+        // Already open? Nothing more to do.
+        if (unlocked == true)
+        {
+            return;
+        }
+
+        // Not enough gems yet? Keep waiting.
+        if (gems < gemsNeeded)
+        {
+            return;
+        }
+
+        unlocked = true;
+
+        // Run every action listed under "On Unlocked" in the Inspector.
+        onUnlocked.Invoke();
+    }
+}
+=END
+
+<b>AddListener(CheckGems)</b> (line 24) means “whenever the gem count changes, call my CheckGems method”. This is the same idea as a UnityEvent, but wired in code. When the count reaches <b>gemsNeeded</b>, onUnlocked fires (in this scene: switch on the Tower Sparkle and show a title). The <b>unlocked</b> variable makes sure it only happens once.
+
+=H3 5. MuseumUI: the one UI manager
+
+=CODE MuseumUI.cs (shortened: the “...” comments mark parts left out)
+public class MuseumUI : MonoBehaviour
+{
+    // ---------- The one MuseumUI in the scene ----------
+
+    // "static" means this variable belongs to the MuseumUI CLASS, not to
+    // one particular object. So any script can write MuseumUI.Instance
+    // to find the UI without needing a slot in the Inspector.
+    // We set it in Awake() below.
+    public static MuseumUI Instance;
+
+    // ... the Inspector slots for the title, info panel, prompt and counters ...
+
+    // Other scripts can "listen" to this to hear when the gem count changes.
+    // It sends the new number of gems (an int). GemGate uses it.
+    public UnityEvent<int> onGemsChanged = new UnityEvent<int>();
+
+    // ---------- Private variables ----------
+
+    // The names of the places the player has already found.
+    private List<string> visitedPlaces = new List<string>();
+
+    // How many gems have been collected.
+    private int gems = 0;
+
+    // ... a timer for the title, and whether the info panel and prompt are showing ...
+
+
+    // Awake runs before Start, as soon as the object is created.
+    // We fill in Instance here so it is ready before other scripts look for it.
+    private void Awake()
+    {
+        Instance = this;
+
+        // Start with everything hidden.
+        SetAlpha(titleGroup, 0f);
+        SetAlpha(infoGroup, 0f);
+        SetAlpha(promptGroup, 0f);
+
+        UpdateCounters();
+    }
+
+
+    // ... Update() fades each piece of UI in or out (see Fade below) ...
+
+
+    // Show a title at the top of the screen for a few seconds.
+    public void ShowTitle(string title)
+    {
+        if (titleText != null)
+        {
+            titleText.text = title;
+        }
+        titleTimer = titleShowTime;
+    }
+
+
+    // ... ShowInfo, HideInfo, ShowPrompt and HidePrompt work the same way ...
+
+
+    // Count a place as found. Each place name only counts once,
+    // so walking back into the same area does not add to the total.
+    public void VisitWing(string wingName)
+    {
+        if (visitedPlaces.Contains(wingName))
+        {
+            return;
+        }
+
+        visitedPlaces.Add(wingName);
+        UpdateCounters();
+    }
+
+
+    // Add one gem, update the counter, and tell anyone listening.
+    public void AddGem()
+    {
+        gems = gems + 1;
+        UpdateCounters();
+
+        // Send the new total to every listener (for example GemGate).
+        onGemsChanged.Invoke(gems);
+    }
+
+
+    // ... UpdateCounters() writes the numbers into the counter text ...
+
+
+    // Move a group's transparency (alpha) a little towards fully visible (1)
+    // or fully hidden (0). Doing a little each frame makes a smooth fade.
+    private void Fade(CanvasGroup group, bool show)
+    {
+        if (group == null)
+        {
+            return;
+        }
+
+        float target = 0f;
+        if (show == true)
+        {
+            target = 1f;
+        }
+
+        group.alpha = Mathf.MoveTowards(group.alpha, target, fadeSpeed * Time.deltaTime);
+    }
+}
+=END
+
+<b>9</b>: The <b>Instance</b> variable. <b>static</b> means it belongs to the class, not one object, so any script can write <b>MuseumUI.Instance</b> to find the UI.
+
+<b>15</b>: A UnityEvent that sends a number (the new gem total). GemGate listens to it.
+
+<b>20</b>: A <b>List</b> of the place names found so far.
+
+<b>30–40</b>: <b>Awake</b> runs before any Start, so Instance is ready before other scripts look for it.
+
+<b>47–54</b>: A small <b>public</b> method. Because it's public and takes a simple value (a string), it appears in UnityEvent dropdowns.
+
+<b>62–71</b>: <b>Contains</b> checks whether the place is already in the list, so walking into the same area twice doesn't count twice.
+
+<b>75–82</b>: Add a gem, update the text, and tell any listeners (GemGate) the new total.
+
+<b>90–104</b>: Fade a Canvas Group towards fully visible (1) or invisible (0) a little each frame, for smooth fades instead of popping.
+
+=PAGE Build it yourself
+<color=#F2B65C><b>1.</b></color> Copy a place trigger: select <b>Place - Deer Pond</b>, press Ctrl + D, and move the copy somewhere new, such as the start of the tower stairs.
+
+<color=#F2B65C><b>2.</b></color> Resize its Box Collider (Edit Collider) to cover the area.
+
+<color=#F2B65C><b>3.</b></color> Change its events: ShowTitle text, a new VisitWing name (it must be unique to count), and new ShowInfo text.
+
+<color=#F2B65C><b>4.</b></color> Select the Canvas and change MuseumUI › <b>Total Wings</b> from 6 to 7 so the counter reads x / 7.
+
+<color=#F2B65C><b>5.</b></color> Make a Press-E object: an empty GameObject with a Sphere Collider (Is Trigger, radius 2) and <b>InteractPrompt</b>. Set Prompt Text, then add an On Interact event, for example the Canvas › ShowInfo with some lore text.
+
+<color=#F2B65C><b>6.</b></color> Make a fourth gem: duplicate Gem 3, move it, and set GemGate › Gems Needed to 4.
+
+=PAGE Try this
+<color=#9fe3ff><b>1.</b></color> Add a seventh place trigger (copy one and move it). Remember to update Total Wings.
+
+<color=#9fe3ff><b>2.</b></color> Change the GemGate so you only need 2 gems. Collect two and check the reward appears.
+
+<color=#9fe3ff><b>3.</b></color> Add a new Press-E sign somewhere on the route that tells the player a short story about the grove.
+
+<color=#9fe3ff><b>4.</b></color> <b>Stretch:</b> use a TriggerZone with Only Once ticked and On Player Enter -> an Audio Source › Play (), to play a sound the first time the player reaches the tower.
+
+=PAGE Common problems
+<b>Trigger does nothing.</b><br><indent=4%>Is Trigger not ticked; the player isn't tagged Player; or the collider is too small or in the wrong place (check the green gizmo).</indent>
+
+<b>My method isn't in the UnityEvent dropdown.</b><br><indent=4%>It must be <b>public</b> and take zero or one simple parameter (string, int, float, bool, or an object).</indent>
+
+<b>UI is huge or tiny on another screen.</b><br><indent=4%>Set Canvas Scaler to Scale With Screen Size and use anchors.</indent>
+
+<b>UI text shows squares.</b><br><indent=4%>The font asset doesn't contain those characters. Use the default TMP font or generate one with them.</indent>
+
+<b>Pressing E does nothing.</b><br><indent=4%>You're not inside the trigger, the Game view isn't focused (click it), or the Key field isn't E.</indent>
+
+<b>Places counter goes above the total.</b><br><indent=4%>Two triggers use different VisitWing names for what you meant as one place; or Total Wings is too low.</indent>
+
+=PAGE Check your understanding
+<color=#9fe3ff><b>Q1</b></color>  What's the difference between a normal collider and a trigger?
+
+<color=#9fe3ff><b>Q2</b></color>  Why use UnityEvents instead of writing a script for every sign?
+
+<color=#9fe3ff><b>Q3</b></color>  What does MuseumUI.Instance give other scripts?
+
+<color=#9fe3ff><b>Q4</b></color>  Why doesn't walking into the same place twice increase the counter?
+
+<color=#9fe3ff><b>Q5</b></color>  How does GemGate find out the gem count changed?
+
+<i>Answers are on the next page. Have a go first!</i>
+
+=PAGE Answers
+<color=#9fe3ff><b>A1</b></color>  A normal collider blocks; a trigger lets things pass through and reports enter/exit.
+
+<color=#9fe3ff><b>A2</b></color>  One general script can do many different things, wired up in the Inspector without new code.
+
+<color=#9fe3ff><b>A3</b></color>  A direct reference to the single UI manager in the scene, because Instance is a static variable set in Awake.
+
+<color=#9fe3ff><b>A4</b></color>  VisitWing checks whether the name is already in its list (Contains) and only adds it if it is new.
+
+<color=#9fe3ff><b>A5</b></color>  It listens to MuseumUI's onGemsChanged event via AddListener.

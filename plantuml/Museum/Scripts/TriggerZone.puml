@@ -1,0 +1,9 @@
+@startuml
+class TriggerZone {
+    + playerTag : string = "Player"
+    + onlyOnce : bool = false
+}
+MonoBehaviour <|-- TriggerZone
+TriggerZone o-> "onPlayerEnter" UnityEvent
+TriggerZone o-> "onPlayerExit" UnityEvent
+@enduml
